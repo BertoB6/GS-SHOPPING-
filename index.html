@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GS SHOPPING</title>
+
+<style>
+
+/* BASE */
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:linear-gradient(135deg,#2c0066,#3a0070,#120030);
+  color:white;
+}
+
+/* HEADER FIXO E TRANSPARENTE */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 30px;
+  background:rgba(42,0,80,0.6);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:bold;
+  color:#ffd700;
+}
+
+nav a{
+  color:white;
+  margin-left:20px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+nav a:hover{
+  color:#00ff88;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:120px 20px 80px; /* espaço extra pelo header fixo */
+}
+
+.hero h1{
+  font-size:40px;
+  color:#ffd700;
+}
+
+.hero p{
+  font-size:18px;
+  margin:20px 0;
+}
+
+.btn{
+  background:#00ff88;
+  padding:15px 30px;
+  color:black;
+  text-decoration:none;
+  font-weight:bold;
+  border-radius:10px;
+  transition:0.3s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 15px rgba(0,255,136,0.6);
+}
+
+/* PRODUTOS */
+.section{
+  padding:50px 20px;
+  text-align:center;
+}
+
+.cards{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:25px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  padding:20px;
+  width:220px;
+  border-radius:15px;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 0 20px rgba(0,255,150,0.4);
+}
+
+.card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+.card h3{
+  color:#ffd700;
+  margin:10px 0 5px;
+}
+
+.card p{
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+/* FOOTER */
+footer{
+  background:rgba(42,0,80,0.6);
+  text-align:center;
+  padding:20px;
+  margin-top:40px;
+  backdrop-filter:blur(10px);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🎮 GS SHOPPING</div>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="loja.html">Loja</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Loja Gamer Free Fire</h1>
+  <p>Contas raras • Diamantes • Itens exclusivos</p>
+  <br>
+  <a href="loja.html" class="btn">Entrar na Loja</a>
+</section>
+
+<section class="section">
+  <h2>🔥 Produtos Populares</h2>
+  <div class="cards">
+
+    <div class="card">
+      <img src="conta1.png" alt="Conta FF Rara">
+      <h3>Conta FF Rara</h3>
+      <p>Skins exclusivas</p>
+    </div>
+
+    <div class="card">
+      <img src="tabela.jpg" alt="520 Diamantes">
+      <h3>Diamantes</h3>
+      <p>Recarga rápida</p>
+    </div>
+
+    <div class="card">
+      <h3>Passe Elite</h3>
+      <p>Temporada atual</p>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>© GS SHOPPING - Loja Gamer</p>
+</footer>
+
+</body>
+</html>

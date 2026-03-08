@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GS SHOPPING</title>
+
+<style>
+
+/* BASE */
+
+body{
+margin:0;
+font-family:Segoe UI,Arial;
+background:linear-gradient(135deg,#2c0066,#3a0070,#120030);
+color:white;
+}
+
+/* HEADER */
+
+header{
+position:fixed;
+top:0;
+width:100%;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+z-index:1000;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+color:#ffd700;
+letter-spacing:1px;
+}
+
+nav a{
+color:white;
+margin-left:20px;
+text-decoration:none;
+font-weight:bold;
+transition:0.3s;
+}
+
+nav a:hover{
+color:#00ff88;
+}
+
+/* CONTAINER */
+
+.container{
+margin-top:100px;
+padding:40px 20px;
+text-align:center;
+}
+
+/* CTA BOTÕES */
+
+.cta{
+margin-bottom:40px;
+}
+
+.cta button{
+padding:16px 35px;
+font-size:18px;
+font-weight:bold;
+margin:10px;
+border:none;
+border-radius:30px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.contas{
+background:#ffd700;
+color:black;
+}
+
+.diamantes{
+background:#00ff88;
+color:black;
+}
+
+.cta button:hover{
+transform:scale(1.08);
+box-shadow:0 0 15px rgba(255,255,255,0.4);
+}
+
+/* MENSAGEM */
+
+.mensagem{
+opacity:0.8;
+font-size:18px;
+margin-top:30px;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:0.5}
+50%{opacity:1}
+100%{opacity:0.5}
+}
+
+/* GRID CONTAS */
+
+.produtos{
+display:none;
+margin-top:30px;
+}
+
+.contas-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
+padding:20px;
+border-radius:15px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 20px rgba(0,255,150,0.4);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.preco{
+color:#00ff88;
+font-weight:bold;
+font-size:18px;
+}
+
+.btn{
+display:inline-block;
+margin-top:10px;
+padding:10px 20px;
+background:#00ff88;
+color:black;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#00cc6a;
+transform:scale(1.05);
+}
+
+/* TABELA DIAMANTES */
+
+.tabela-container{
+max-width:700px;
+margin:auto;
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+backdrop-filter:blur(10px);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#ffd700;
+color:black;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+tr:hover{
+background:rgba(255,255,255,0.05);
+}
+
+/* BADGE */
+
+.popular{
+color:#ffd700;
+font-size:12px;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">🎮 GS SHOPPING</div>
+
+<nav>
+<a href="index.html">Início</a>
+<a href="loja.html">Loja</a>
+</nav>
+
+</header>
+
+
+<div class="container">
+
+<div class="cta">
+
+<button class="contas" onclick="mostrarContas()">🔥 Contas FF</button>
+
+<button class="diamantes" onclick="mostrarDiamantes()">💎 Diamantes</button>
+
+</div>
+
+<div id="mensagem" class="mensagem">
+Escolhe um produto para comprar 👆
+</div>
+
+
+<!-- CONTAS -->
+<!-- CONTAS -->
+
+<div id="contas" class="produtos">
+
+  <div class="contas-grid">
+
+    <div class="card">
+      <img src="img/conta2.jpg" alt="Conta Rara">
+      <h3>Conta Rara</h3>
+      <p>Interessado clica em Comprar. Não quero viajados no pv</p>
+      <p class="preco">519 MT</p>
+      <button class="btn" onclick="comprar('Conta FF Rara 519MT')">Comprar</button>
+    </div>
+
+    <div class="card">
+      <img src="img/conta3.jpg" alt="Conta Mestre">
+      <h3>Conta Mestre</h3>
+      <p>Interessado clica em Comprar. Não quero viajados no pv</p>
+      <p class="preco">719 MT</p>
+      <button class="btn" onclick="comprar('Conta FF Mestre 719MT')">Comprar</button>
+    </div>
+
+    <div class="card">
+      <img src="img/conta4.jpg" alt="Conta Elite">
+      <h3>Conta Elite</h3>
+      <p>Interessado clica em Comprar. Não quero viajados no pv</p>
+      <p class="preco">999 MT</p>
+      <button class="btn" onclick="comprar('Conta FF Elite 999MT')">Comprar</button>
+    </div>
+
+    <div class="card">
+      <img src="img/conta5.jpg" alt="Conta Iniciante">
+      <h3>Conta Iniciante</h3>
+      <p>Interessando puxa pv</p>
+      <p class="preco">169 MT</p>
+      <button class="btn" onclick="comprar('Conta FF Iniciante 169MT')">Comprar</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- DIAMANTES -->
+
+<div id="diamantes" class="produtos">
+
+<div class="tabela-container">
+
+<table>
+
+<tr>
+<th>Preço</th>
+<th>Diamantes</th>
+<th></th>
+</tr>
+
+<tr>
+<td>75 MT</td>
+<td>110</td>
+<td><button class="btn" onclick="comprar('110 diamantes 75MT')">Comprar</button></td>
+</tr>
+
+<tr>
+<td>145 MT</td>
+<td>231</td>
+<td><button class="btn" onclick="comprar('231 diamantes 145MT')">Comprar</button></td>
+</tr>
+
+<tr>
+<td>275 MT <span class="popular">⭐ Popular</span></td>
+<td>583</td>
+<td><button class="btn" onclick="comprar('583 diamantes 275MT')">Comprar</button></td>
+</tr>
+
+<tr>
+<td>420 MT</td>
+<td>1118</td>
+<td><button class="btn" onclick="comprar('1118 diamantes 420MT')">Comprar</button></td>
+</tr>
+
+<tr>
+<td>525 MT</td>
+<td>1600</td>
+<td><button class="btn" onclick="comprar('1600 diamantes 525MT')">Comprar</button></td>
+</tr>
+
+<tr>
+<td>715 MT</td>
+<td>2600</td>
+<td><button class="btn" onclick="comprar('2600 diamantes 715MT')">Comprar</button></td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const numero="258840667205";
+
+function comprar(produto){
+
+let msg=encodeURIComponent("Olá, quero comprar "+produto);
+
+window.open("https://wa.me/"+numero+"?text="+msg);
+
+}
+
+function mostrarContas(){
+
+document.getElementById("mensagem").style.display="none";
+document.getElementById("contas").style.display="block";
+document.getElementById("diamantes").style.display="none";
+
+}
+
+function mostrarDiamantes(){
+
+document.getElementById("mensagem").style.display="none";
+document.getElementById("diamantes").style.display="block";
+document.getElementById("contas").style.display="none";
+
+}
+
+</script>
+
+</body>
+</html>
