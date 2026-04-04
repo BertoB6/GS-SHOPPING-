@@ -115,6 +115,7 @@ padding:10px;
 border:none;
 border-radius:8px;
 cursor:pointer;
+font-weight:bold;
 }
 
 /* TABELA */
@@ -126,12 +127,11 @@ border-collapse:collapse;
 }
 
 td,th{
-padding:10px;
+padding:12px;
 border-bottom:1px solid #444;
 }
 
 /* FLOATING */
-
 .floating-box{
 position:fixed;
 bottom:20px;
@@ -220,16 +220,30 @@ Escolhe um produto 👆
 <div id="diamantes" class="produtos">
 
 <table>
-<tr><th>Preço</th><th>Diamantes</th><th></th></tr>
+
+<tr>
+<th>Preço (MT)</th>
+<th>Diamantes</th>
+<th>Comprar</th>
+</tr>
 
 <tr><td>75</td><td>110</td>
-<td><button class="btn" onclick="comprar('110 diamantes 75MT')">Comprar</button></td></tr>
+<td><button class="btn" onclick="comprar('110 diamantes por 75MT')">Comprar</button></td></tr>
 
 <tr><td>145</td><td>231</td>
-<td><button class="btn" onclick="comprar('231 diamantes 145MT')">Comprar</button></td></tr>
+<td><button class="btn" onclick="comprar('231 diamantes por 145MT')">Comprar</button></td></tr>
 
-<tr><td>275</td><td>583</td>
-<td><button class="btn" onclick="comprar('583 diamantes 275MT')">Comprar</button></td></tr>
+<tr><td>275</td><td>583 ⭐</td>
+<td><button class="btn" onclick="comprar('583 diamantes por 275MT')">Comprar</button></td></tr>
+
+<tr><td>420</td><td>1118</td>
+<td><button class="btn" onclick="comprar('1118 diamantes por 420MT')">Comprar</button></td></tr>
+
+<tr><td>525</td><td>1600</td>
+<td><button class="btn" onclick="comprar('1600 diamantes por 525MT')">Comprar</button></td></tr>
+
+<tr><td>715</td><td>2600</td>
+<td><button class="btn" onclick="comprar('2600 diamantes por 715MT')">Comprar</button></td></tr>
 
 </table>
 
@@ -247,10 +261,10 @@ Criar meu site
 
 <script>
 
-const numero="258840667205";
+const numero="258842328113";
 
 function comprar(p){
-let msg=encodeURIComponent("Quero "+p);
+let msg=encodeURIComponent("Olá, quero comprar "+p);
 window.open("https://wa.me/"+numero+"?text="+msg);
 }
 
