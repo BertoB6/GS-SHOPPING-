@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE WOLF GAMES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0a0a0f;
+  --panel:#14141c;
+  --panel2:#1c1c26;
+  --line:#2a2a38;
+  --moon:#e8e6ff;
+  --fog:#9a97b5;
+  --acid:#c8ff3d;
+  --blood:#ff2e5b;
+  --violet:#8b5cf6;
+  --gold:#ffb020;
+  --glow-acid: 0 0 24px rgba(200,255,61,.35);
+  --glow-blood: 0 0 24px rgba(255,46,91,.35);
+  --glow-violet: 0 0 24px rgba(139,92,246,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--moon);
+  font-family:'Rajdhani',sans-serif;
+  font-weight:500;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 800px 500px at 15% -10%, rgba(139,92,246,.18), transparent),
+    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(200,255,61,.10), transparent),
+    radial-gradient(ellipse 600px 600px at 50% 100%, rgba(255,46,91,.10), transparent);
+  pointer-events:none;
+  z-index:0;
+}
+.noise{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1,h2,h3,.display{font-family:'Teko',sans-serif; letter-spacing:.02em; font-weight:700;}
+.eyebrow{font-family:'Rajdhani',sans-serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--fog);}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;}
+::selection{background:var(--acid);color:#0a0a0f;}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--void);}
+::-webkit-scrollbar-thumb{background:var(--panel2);border-radius:10px;border:2px solid var(--void);}
+
+/* ===== HEADER ===== */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,15,.82);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-wrap{
+  max-width:1280px;margin:0 auto;padding:16px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:42px;height:42px;position:relative;flex-shrink:0;
+}
+.brand-mark svg{width:100%;height:100%;filter:drop-shadow(0 0 10px rgba(200,255,61,.5));}
+.brand-text{font-family:'Teko',sans-serif;font-size:1.9rem;line-height:.85;letter-spacing:.03em;}
+.brand-text b{color:var(--acid);}
+.brand-text small{display:block;font-family:'Rajdhani',sans-serif;font-size:.62rem;letter-spacing:.35em;color:var(--fog);font-weight:600;margin-top:2px;}
+
+nav.menu{display:flex;align-items:center;gap:4px;}
+nav.menu button{
+  background:transparent;color:var(--fog);
+  padding:10px 18px;border-radius:8px;
+  font-size:1rem;font-weight:600;letter-spacing:.03em;
+  transition:.2s;position:relative;
+}
+nav.menu button:hover{color:var(--moon);background:var(--panel2);}
+nav.menu button.active{color:var(--void);background:var(--acid);box-shadow:var(--glow-acid);}
+nav.menu button.vip-btn{color:var(--gold);}
+nav.menu button.vip-btn.active{color:var(--void);background:var(--gold);box-shadow:0 0 24px rgba(255,176,32,.4);}
+nav.menu button.admin-btn{color:var(--violet);font-size:.85rem;padding:10px 14px;}
+nav.menu button.admin-btn.active{color:#fff;background:var(--violet);box-shadow:var(--glow-violet);}
+
+.hamburger{display:none;background:var(--panel2);width:44px;height:44px;border-radius:10px;align-items:center;justify-content:center;flex-shrink:0;}
+.hamburger span,.hamburger span::before,.hamburger span::after{
+  content:"";display:block;width:20px;height:2px;background:var(--moon);position:relative;transition:.2s;
+}
+.hamburger span::before{position:absolute;top:-7px;}
+.hamburger span::after{position:absolute;top:7px;}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;z-index:1;
+  max-width:1280px;margin:0 auto;padding:80px 28px 60px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid var(--line);border-radius:999px;
+  font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--acid);
+  margin-bottom:22px;background:rgba(200,255,61,.06);
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:var(--glow-acid);animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{
+  font-size:clamp(3.2rem,7vw,6.2rem);line-height:.86;letter-spacing:.01em;
+  text-transform:uppercase;
+}
+.hero h1 .l1{display:block;color:var(--moon);}
+.hero h1 .l2{
+  display:block;
+  background:linear-gradient(100deg,var(--acid),#e6ff9e 40%,var(--acid));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 30px rgba(200,255,61,.25));
+}
+.hero p.lead{
+  margin-top:22px;max-width:520px;font-size:1.15rem;color:var(--fog);line-height:1.6;
+}
+.hero-cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:10px;
+  font-weight:700;font-size:1rem;letter-spacing:.02em;transition:.2s;
+}
+.btn-primary{background:var(--acid);color:#0a0a0f;box-shadow:var(--glow-acid);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(200,255,61,.5);}
+.btn-ghost{background:var(--panel2);color:var(--moon);border:1px solid var(--line);}
+.btn-ghost:hover{border-color:var(--acid);color:var(--acid);}
+.btn-whats{background:#25D366;color:#04240f;box-shadow:0 0 24px rgba(37,211,102,.35);}
+.btn-whats:hover{transform:translateY(-2px);}
+
+.hero-stats{display:flex;gap:28px;margin-top:40px;}
+.hero-stats div{display:flex;flex-direction:column;}
+.hero-stats b{font-family:'Teko';font-size:2.2rem;color:var(--acid);line-height:1;}
+.hero-stats span{font-size:.75rem;color:var(--fog);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
+
+.hero-visual{
+  position:relative;aspect-ratio:1/1;border-radius:24px;
+  background:linear-gradient(160deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-visual .wolf-glow{width:70%;filter:drop-shadow(0 0 40px rgba(200,255,61,.35));}
+.hero-visual::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 30%, transparent 30%, rgba(10,10,15,.6) 100%);
+}
+.hero-visual .corner{position:absolute;font-size:.65rem;letter-spacing:.2em;color:var(--fog);text-transform:uppercase;z-index:2;}
+.hero-visual .corner.tl{top:18px;left:18px;}
+.hero-visual .corner.br{bottom:18px;right:18px;text-align:right;}
+
+/* ===== SECTION SHELL ===== */
+.section{max-width:1280px;margin:0 auto;padding:70px 28px;position:relative;z-index:1;}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:38px;gap:20px;flex-wrap:wrap;}
+.section-head h2{font-size:clamp(2.4rem,4.5vw,3.4rem);text-transform:uppercase;line-height:.9;}
+.section-head p{color:var(--fog);max-width:420px;font-size:.98rem;}
+.section-tag{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--acid);margin-bottom:10px;display:block;}
+.section-tag.gold{color:var(--gold);}
+.section-tag.violet{color:var(--violet);}
+
+/* ===== GAME GRID ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px;}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;transition:.25s;position:relative;
+}
+.card:hover{transform:translateY(-6px);border-color:rgba(200,255,61,.4);box-shadow:0 20px 40px -20px rgba(0,0,0,.6), var(--glow-acid);}
+.card.vip:hover{border-color:rgba(255,176,32,.5);box-shadow:0 20px 40px -20px rgba(0,0,0,.6), 0 0 24px rgba(255,176,32,.3);}
+.card-img{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--panel2);display:block;}
+.card-img-fallback{
+  width:100%;aspect-ratio:16/10;background:linear-gradient(135deg,var(--panel2),var(--panel));
+  display:flex;align-items:center;justify-content:center;color:var(--line);font-size:2rem;font-family:'Teko';
+}
+.card-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:12px;flex:1;}
+.card-genre{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--acid);}
+.card.vip .card-genre{color:var(--gold);}
+.card h3{font-size:1.7rem;line-height:1;text-transform:uppercase;}
+.card-desc{color:var(--fog);font-size:.92rem;line-height:1.5;flex:1;}
+.card-meta{display:flex;gap:14px;font-size:.78rem;color:var(--fog);}
+.card-price{
+  font-family:'Teko';font-size:1.8rem;color:var(--gold);
+}
+.card-actions{display:flex;gap:10px;margin-top:4px;}
+.card-actions .btn{flex:1;justify-content:center;padding:12px 16px;font-size:.9rem;}
+
+/* reactions */
+.reactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;}
+.react-btn{
+  background:var(--panel2);border:1px solid var(--line);border-radius:999px;
+  padding:6px 11px;font-size:.85rem;display:flex;align-items:center;gap:6px;color:var(--fog);
+  transition:.15s;
+}
+.react-btn:hover{border-color:var(--acid);color:var(--moon);}
+.react-btn.picked{background:rgba(200,255,61,.12);border-color:var(--acid);color:var(--acid);}
+.react-btn b{font-weight:700;font-size:.82rem;}
+
+.comments-toggle{
+  font-size:.82rem;color:var(--fog);text-align:left;background:transparent;
+  border-top:1px solid var(--line);padding-top:12px;margin-top:2px;display:flex;align-items:center;gap:6px;
+}
+.comments-toggle:hover{color:var(--acid);}
+.comments-box{display:none;flex-direction:column;gap:12px;margin-top:6px;}
+.comments-box.open{display:flex;}
+.comment-list{display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto;padding-right:4px;}
+.comment-item{background:var(--panel2);border-radius:10px;padding:10px 12px;font-size:.85rem;}
+.comment-item b{color:var(--acid);font-size:.8rem;display:block;margin-bottom:2px;}
+.comment-item span.date{color:var(--fog);font-size:.68rem;margin-left:6px;}
+.comment-empty{color:var(--fog);font-size:.82rem;font-style:italic;}
+.comment-form{display:flex;flex-direction:column;gap:8px;}
+.comment-form input,.comment-form textarea{
+  background:var(--void);border:1px solid var(--line);border-radius:8px;color:var(--moon);
+  padding:9px 12px;font-family:inherit;font-size:.88rem;resize:none;
+}
+.comment-form input:focus,.comment-form textarea:focus{outline:none;border-color:var(--acid);}
+.comment-form button{
+  align-self:flex-end;background:var(--acid);color:var(--void);padding:9px 18px;border-radius:8px;font-weight:700;font-size:.85rem;
+}
+
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--fog);
+  border:1px dashed var(--line);border-radius:16px;
+}
+.empty-state b{display:block;color:var(--moon);font-family:'Teko';font-size:1.8rem;margin-bottom:6px;}
+
+/* ===== CHANNEL BANNER ===== */
+.channel-banner{
+  max-width:1280px;margin:0 auto 70px;padding:0 28px;
+}
+.channel-inner{
+  border-radius:20px;padding:38px 40px;
+  background:linear-gradient(115deg,rgba(37,211,102,.14),rgba(20,20,28,.4));
+  border:1px solid rgba(37,211,102,.35);
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.channel-inner::before{
+  content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,211,102,.25),transparent 70%);
+}
+.channel-text .eyebrow{color:#25D366;}
+.channel-text h3{font-size:2.1rem;text-transform:uppercase;margin-top:4px;}
+.channel-text p{color:var(--fog);margin-top:6px;max-width:440px;}
+
+/* ===== VIP SECTION BG ===== */
+#vip-section{
+  background:linear-gradient(180deg,rgba(255,176,32,.05),transparent 20%);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+
+/* ===== ADMIN ===== */
+#admin-section{display:none;}
+.admin-gate{
+  max-width:440px;margin:80px auto;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:40px;text-align:center;
+}
+.admin-gate .lock{font-size:2.6rem;margin-bottom:14px;}
+.admin-gate input{
+  width:100%;background:var(--void);border:1px solid var(--line);border-radius:10px;
+  padding:13px 16px;color:var(--moon);font-family:inherit;font-size:1rem;margin:18px 0;text-align:center;
+  letter-spacing:.3em;
+}
+.admin-gate input:focus{outline:none;border-color:var(--violet);}
+.admin-gate button{
+  width:100%;background:var(--violet);color:#fff;padding:13px;border-radius:10px;font-weight:700;box-shadow:var(--glow-violet);
+}
+.admin-gate .err{color:var(--blood);font-size:.85rem;margin-top:10px;min-height:18px;}
+
+.admin-panel{display:none;}
+.admin-panel.open{display:block;}
+.admin-toolbar{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap;}
+.admin-toolbar button{
+  background:var(--panel2);border:1px solid var(--line);color:var(--moon);padding:11px 20px;border-radius:9px;font-weight:600;
+}
+.admin-toolbar button.active{background:var(--violet);border-color:var(--violet);color:#fff;}
+.admin-toolbar button.logout{margin-left:auto;background:transparent;color:var(--blood);border-color:rgba(255,46,91,.4);}
+
+.admin-form{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;
+}
+.admin-form .full{grid-column:1/-1;}
+.admin-form label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--fog);margin-bottom:6px;display:block;}
+.admin-form input,.admin-form textarea,.admin-form select{
+  width:100%;background:var(--void);border:1px solid var(--line);border-radius:9px;color:var(--moon);
+  padding:11px 14px;font-family:inherit;font-size:.95rem;
+}
+.admin-form textarea{resize:vertical;min-height:70px;}
+.admin-form input:focus,.admin-form textarea:focus,.admin-form select:focus{outline:none;border-color:var(--violet);}
+.admin-form .submit-row{grid-column:1/-1;display:flex;gap:12px;justify-content:flex-end;margin-top:6px;}
+.admin-form .submit-row button{
+  background:var(--acid);color:var(--void);padding:13px 26px;border-radius:9px;font-weight:700;
+}
+.admin-form .submit-row button.cancel{background:transparent;border:1px solid var(--line);color:var(--fog);}
+
+.admin-list{display:flex;flex-direction:column;gap:12px;}
+.admin-row{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;
+  display:flex;align-items:center;gap:16px;
+}
+.admin-row img{width:64px;height:44px;object-fit:cover;border-radius:6px;background:var(--panel2);flex-shrink:0;}
+.admin-row .info{flex:1;min-width:0;}
+.admin-row .info b{font-family:'Teko';font-size:1.3rem;display:block;}
+.admin-row .info span{font-size:.8rem;color:var(--fog);}
+.admin-row .tag{font-size:.65rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.1em;}
+.admin-row .tag.free{color:var(--acid);border-color:rgba(200,255,61,.4);}
+.admin-row .tag.vip{color:var(--gold);border-color:rgba(255,176,32,.4);}
+.admin-row .row-actions{display:flex;gap:8px;}
+.admin-row .row-actions button{background:var(--panel2);border:1px solid var(--line);color:var(--moon);padding:8px 12px;border-radius:7px;font-size:.82rem;}
+.admin-row .row-actions button.del{color:var(--blood);}
+.admin-empty{color:var(--fog);text-align:center;padding:40px;border:1px dashed var(--line);border-radius:12px;}
+
+/* ===== FOOTER ===== */
+footer{
+  border-top:1px solid var(--line);padding:50px 28px 30px;text-align:center;position:relative;z-index:1;
+}
+footer .brand-text{justify-content:center;display:flex;margin-bottom:14px;}
+footer p{color:var(--fog);font-size:.85rem;}
+footer .foot-links{display:flex;gap:22px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+footer .foot-links a{font-size:.85rem;color:var(--fog);}
+footer .foot-links a:hover{color:var(--acid);}
+
+/* toast */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120%);
+  background:var(--panel2);border:1px solid var(--acid);color:var(--moon);
+  padding:14px 24px;border-radius:10px;font-weight:600;z-index:999;
+  box-shadow:var(--glow-acid);transition:.35s;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+section.page{display:none;}
+section.page.active{display:block;}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:40px;}
+  .hero-visual{max-width:340px;margin:0 auto;}
+  nav.menu{display:none;position:absolute;top:74px;left:0;right:0;background:var(--void);
+    flex-direction:column;padding:14px;border-bottom:1px solid var(--line);gap:6px;}
+  nav.menu.open{display:flex;}
+  .hamburger{display:flex;}
+  .admin-form{grid-template-columns:1fr;}
+  .channel-inner{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,6 62,34 90,20 78,48 96,62 66,64 70,94 50,72 30,94 34,64 4,62 22,48 10,20 38,34" fill="#c8ff3d"/>
+          <circle cx="50" cy="50" r="14" fill="#0a0a0f"/>
+        </svg>
+      </div>
+      <div class="brand-text">THE WOLF<br><b>GAMES</b><small>DOWNLOAD &middot; JOGUE &middot; DOMINE</small></div>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span></button>
+    <nav class="menu" id="mainMenu">
+      <button data-page="home" class="active">Início</button>
+      <button data-page="games">Jogos Grátis</button>
+      <button data-page="vip" class="vip-btn">⭐ VIP</button>
+      <button data-page="admin" class="admin-btn">🔒 Admin</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HOME ================= -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><span class="dot"></span> Matilha ativa &middot; novos jogos toda semana</div>
+      <h1><span class="l1">CACE SEU</span><span class="l2">PRÓXIMO JOGO</span></h1>
+      <p class="lead">Downloads grátis via Mediafire, jogos exclusivos na área VIP e uma matilha que comenta, reage e decide o que joga a seguir. Bem-vindo à toca.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="goTo('games')">🎮 Ver jogos grátis</button>
+        <button class="btn btn-ghost" onclick="goTo('vip')">⭐ Explorar VIP</button>
+      </div>
+      <div class="hero-stats">
+        <div><b id="statGames">0</b><span>Jogos grátis</span></div>
+        <div><b id="statVip">0</b><span>Jogos VIP</span></div>
+        <div><b id="statComments">0</b><span>Comentários</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="corner tl">EST. 2026</span>
+      <svg class="wolf-glow" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="100,15 122,66 178,40 156,92 190,120 132,124 140,182 100,146 60,182 68,124 10,120 44,92 22,40 78,66" fill="none" stroke="#c8ff3d" stroke-width="2" opacity=".9"/>
+        <polygon points="100,45 112,70 140,58 128,84 145,98 116,100 120,130 100,112 80,130 84,100 55,98 72,84 60,58 88,70" fill="#c8ff3d" opacity=".85"/>
+        <circle cx="100" cy="100" r="70" stroke="#8b5cf6" stroke-width="1" opacity=".4" stroke-dasharray="4 6"/>
+      </svg>
+      <span class="corner br">HOWL LOUD</span>
+    </div>
+  </div>
+
+  <div class="channel-banner">
+    <div class="channel-inner">
+      <div class="channel-text">
+        <span class="eyebrow">📢 Canal oficial</span>
+        <h3>Entra no canal de jogos no WhatsApp</h3>
+        <p>Recebe novidades, lançamentos e promoções da matilha em primeira mão.</p>
+      </div>
+      <a class="btn btn-whats" href="https://whatsapp.com/channel/0029VbCk7TlBadmRy3swSn2S" target="_blank" rel="noopener">💬 Entrar no canal</a>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0;">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Em destaque</span>
+        <h2>Últimos lançamentos</h2>
+      </div>
+      <button class="btn btn-ghost" onclick="goTo('games')">Ver todos →</button>
+    </div>
+    <div class="grid" id="homeFeaturedGrid"></div>
+  </div>
+</section>
+
+<!-- ================= GAMES (FREE) ================= -->
+<section class="page" id="page-games">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Biblioteca grátis</span>
+        <h2>Jogos para baixar</h2>
+        <p>Clica em baixar para ir direto ao Mediafire. Comenta e reage para a matilha toda ver.</p>
+      </div>
+    </div>
+    <div class="grid" id="freeGrid"></div>
+  </div>
+</section>
+
+<!-- ================= VIP ================= -->
+<section class="page" id="page-vip">
+  <div id="vip-section">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-tag gold">Acesso exclusivo</span>
+          <h2>Jogos VIP à venda</h2>
+          <p>Escolhe o teu jogo e fala diretamente comigo no WhatsApp para garantir o teu acesso.</p>
+        </div>
+      </div>
+      <div class="grid" id="vipGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ADMIN ================= -->
+<section class="page" id="page-admin">
+  <div class="section" id="admin-section">
+
+    <div class="admin-gate" id="adminGate">
+      <div class="lock">🔒</div>
+      <h3 style="font-family:'Teko';font-size:1.8rem;">Área restrita</h3>
+      <p style="color:var(--fog);font-size:.9rem;margin-top:6px;">Só o dono da matilha entra aqui.</p>
+      <input type="password" id="adminPass" placeholder="Senha de acesso" maxlength="40">
+      <button onclick="tryLogin()">Entrar</button>
+      <div class="err" id="adminErr"></div>
+    </div>
+
+    <div class="admin-panel" id="adminPanel">
+      <div class="section-head">
+        <div>
+          <span class="section-tag violet">Painel do dono</span>
+          <h2>Gerir jogos</h2>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <button class="active" id="tabAddBtn" onclick="setAdminTab('add')">+ Adicionar jogo</button>
+        <button id="tabListBtn" onclick="setAdminTab('list')">📋 Todos os jogos</button>
+        <button class="logout" onclick="adminLogout()">Sair</button>
+      </div>
+
+      <form class="admin-form" id="gameForm">
+        <input type="hidden" id="editId">
+        <div class="full">
+          <label>Tipo de jogo</label>
+          <select id="fType">
+            <option value="free">Grátis (Mediafire)</option>
+            <option value="vip">VIP (à venda)</option>
+          </select>
+        </div>
+        <div>
+          <label>Nome do jogo</label>
+          <input type="text" id="fName" placeholder="Ex: Shadow Hunt X" required>
+        </div>
+        <div>
+          <label>Género / categoria</label>
+          <input type="text" id="fGenre" placeholder="Ex: Ação, Terror, RPG...">
+        </div>
+        <div class="full">
+          <label>Descrição / informação do jogo</label>
+          <textarea id="fDesc" placeholder="Fala sobre o jogo, tamanho, requisitos, etc."></textarea>
+        </div>
+        <div>
+          <label>URL da imagem/capa</label>
+          <input type="text" id="fImg" placeholder="https://... (link direto da imagem)">
+        </div>
+        <div id="freeFieldWrap">
+          <label>Link Mediafire</label>
+          <input type="text" id="fLink" placeholder="https://www.mediafire.com/...">
+        </div>
+        <div id="vipFieldWrap" style="display:none;">
+          <label>Preço (Kz / MZN / $ — escreve como quiseres)</label>
+          <input type="text" id="fPrice" placeholder="Ex: 3000 Kz">
+        </div>
+        <div class="submit-row">
+          <button type="button" class="cancel" onclick="resetForm()">Limpar</button>
+          <button type="submit" id="submitBtn">Publicar jogo</button>
+        </div>
+      </form>
+
+      <div class="admin-list" id="adminList"></div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="brand-text">THE WOLF<br><b style="color:var(--acid)">GAMES</b></div>
+  <p>© 2026 THE WOLF GAMES — todos os jogos partilhados aqui são para fins de divulgação da comunidade.</p>
+  <div class="foot-links">
+    <a href="https://whatsapp.com/channel/0029VbCk7TlBadmRy3swSn2S" target="_blank" rel="noopener">📢 Canal WhatsApp</a>
+    <a href="#" onclick="goTo('games');return false;">Jogos grátis</a>
+    <a href="#" onclick="goTo('vip');return false;">VIP</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========= THE WOLF GAMES — app.js =========
+   Tudo é guardado no localStorage do navegador.
+   Senha do admin: pode ser alterada na constante ADMIN_PASSWORD abaixo.
+*/
+const ADMIN_PASSWORD = "wolf2026"; // <-- TROCA ESTA SENHA
+const WHATSAPP_NUMBER = "874187399";
+const EMOJIS = ["🔥","😍","👍","😂","💀","👑"];
+
+/* ---------- estado ---------- */
+let games = loadGames();
+let comments = loadComments();
+let reactions = loadReactions();
+let isAdmin = sessionStorage.getItem("wolf_admin") === "1";
+
+function loadGames(){
+  const raw = localStorage.getItem("wolf_games");
+  if(raw) return JSON.parse(raw);
+  // jogos de exemplo iniciais
+  const seed = [
+    {
+      id: uid(), type:"free", name:"Shadow Reaper", genre:"Ação / Terror",
+      desc:"Sobrevive à noite numa cidade tomada por criaturas das sombras. Combate rápido e história sombria.",
+      img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
+      link:"https://www.mediafire.com/", createdAt:Date.now()
+    },
+    {
+      id: uid(), type:"free", name:"Turbo Rift Racing", genre:"Corrida",
+      desc:"Corridas arcade insanas com carros customizáveis e pistas neon. Multiplayer local disponível.",
+      img:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1200&auto=format&fit=crop",
+      link:"https://www.mediafire.com/", createdAt:Date.now()-1000
+    },
+    {
+      id: uid(), type:"vip", name:"Alpha Wolf: Legacy", genre:"RPG de Ação",
+      desc:"Edição completa com todas as expansões, save exclusivo e skins da matilha. Jogo VIP raro.",
+      img:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
+      price:"5000 Kz", createdAt:Date.now()-2000
+    }
+  ];
+  saveGames(seed);
+  return seed;
+}
+function loadComments(){ return JSON.parse(localStorage.getItem("wolf_comments")||"{}"); }
+function loadReactions(){ return JSON.parse(localStorage.getItem("wolf_reactions")||"{}"); }
+function saveGames(g){ games=g; localStorage.setItem("wolf_games", JSON.stringify(g)); }
+function saveComments(){ localStorage.setItem("wolf_comments", JSON.stringify(comments)); }
+function saveReactions(){ localStorage.setItem("wolf_reactions", JSON.stringify(reactions)); }
+function uid(){ return "g_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+
+/* ---------- navegação ---------- */
+function goTo(page){
+  document.querySelectorAll("section.page").forEach(s=>s.classList.remove("active"));
+  document.getElementById("page-"+page).classList.add("active");
+  document.querySelectorAll("nav.menu button").forEach(b=>b.classList.remove("active"));
+  const btn = document.querySelector(`nav.menu button[data-page="${page}"]`);
+  if(btn) btn.classList.add("active");
+  document.getElementById("mainMenu").classList.remove("open");
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(page==="admin") renderAdmin();
+}
+document.querySelectorAll("nav.menu button[data-page]").forEach(b=>{
+  b.addEventListener("click", ()=>goTo(b.dataset.page));
+});
+document.getElementById("hamburger").addEventListener("click", ()=>{
+  document.getElementById("mainMenu").classList.toggle("open");
+});
+
+/* ---------- toast ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+/* ---------- render cards ---------- */
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str||"";
+  return d.innerHTML;
+}
+
+function renderCard(game){
+  const gComments = comments[game.id] || [];
+  const gReactions = reactions[game.id] || {};
+  const isVip = game.type === "vip";
+
+  const imgHtml = game.img
+    ? `<img class="card-img" src="${escapeHtml(game.img)}" alt="${escapeHtml(game.name)}" onerror="this.outerHTML='<div class=&quot;card-img-fallback&quot;>🐺</div>'">`
+    : `<div class="card-img-fallback">🐺</div>`;
+
+  const reactBtns = EMOJIS.map(e=>{
+    const count = gReactions[e] || 0;
+    const picked = (JSON.parse(localStorage.getItem("wolf_my_reacts")||"{}")[game.id]) === e;
+    return `<button class="react-btn ${picked?'picked':''}" onclick="toggleReaction('${game.id}','${e}')">${e} ${count>0?`<b>${count}</b>`:""}</button>`;
+  }).join("");
+
+  const commentsHtml = gComments.length
+    ? gComments.map(c=>`<div class="comment-item"><b>${escapeHtml(c.name)}<span class="date">${c.date}</span></b>${escapeHtml(c.text)}</div>`).join("")
+    : `<div class="comment-empty">Sê o primeiro a comentar 🐾</div>`;
+
+  const actionBtn = isVip
+    ? `<a class="btn btn-whats" style="flex:1;justify-content:center" target="_blank" rel="noopener" href="${whatsappLink(game.name)}">💬 Comprar no WhatsApp</a>`
+    : `<a class="btn btn-primary" style="flex:1;justify-content:center" target="_blank" rel="noopener" href="${escapeHtml(game.link||'#')}">⬇️ Baixar (Mediafire)</a>`;
+
+  return `
+  <div class="card ${isVip?'vip':''}" data-id="${game.id}">
+    ${imgHtml}
+    <div class="card-body">
+      <span class="card-genre">${escapeHtml(game.genre||(isVip?'VIP':'Grátis'))}</span>
+      <h3>${escapeHtml(game.name)}</h3>
+      <p class="card-desc">${escapeHtml(game.desc||"")}</p>
+      ${isVip ? `<div class="card-price">${escapeHtml(game.price||"Consultar")}</div>` : ""}
+      <div class="reactions">${reactBtns}</div>
+      <div class="card-actions">${actionBtn}</div>
+      <button class="comments-toggle" onclick="toggleComments('${game.id}')">💬 ${gComments.length} comentário(s) — ver / comentar</button>
+      <div class="comments-box" id="cbox-${game.id}">
+        <div class="comment-list">${commentsHtml}</div>
+        <form class="comment-form" onsubmit="return submitComment(event,'${game.id}')">
+          <input type="text" placeholder="Teu nome" maxlength="30" required>
+          <textarea rows="2" placeholder="Escreve o teu comentário..." maxlength="300" required></textarea>
+          <button type="submit">Comentar</button>
+        </form>
+      </div>
+    </div>
+  </div>`;
+}
+
+function whatsappLink(gameName){
+  const msg = encodeURIComponent(`Estou interessado no jogo ${gameName}`);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+}
+
+function toggleComments(id){
+  document.getElementById("cbox-"+id).classList.toggle("open");
+}
+
+function submitComment(ev, id){
+  ev.preventDefault();
+  const form = ev.target;
+  const name = form.querySelector('input').value.trim();
+  const text = form.querySelector('textarea').value.trim();
+  if(!name || !text) return false;
+  if(!comments[id]) comments[id] = [];
+  comments[id].push({name, text, date: new Date().toLocaleDateString('pt-PT',{day:'2-digit',month:'2-digit'})});
+  saveComments();
+  form.reset();
+  renderAll();
+  showToast("Comentário publicado 🐺");
+  // reabre a caixa de comentários do card certo após re-render
+  const box = document.getElementById("cbox-"+id);
+  if(box) box.classList.add("open");
+  return false;
+}
+
+function toggleReaction(id, emoji){
+  const my = JSON.parse(localStorage.getItem("wolf_my_reacts")||"{}");
+  if(!reactions[id]) reactions[id] = {};
+  const prev = my[id];
+  if(prev === emoji){
+    // remover reação
+    reactions[id][emoji] = Math.max(0,(reactions[id][emoji]||1)-1);
+    delete my[id];
+  } else {
+    if(prev){ reactions[id][prev] = Math.max(0,(reactions[id][prev]||1)-1); }
+    reactions[id][emoji] = (reactions[id][emoji]||0)+1;
+    my[id] = emoji;
+  }
+  localStorage.setItem("wolf_my_reacts", JSON.stringify(my));
+  saveReactions();
+  renderAll();
+}
+
+/* ---------- render listas ---------- */
+function renderAll(){
+  const free = games.filter(g=>g.type==="free").sort((a,b)=>b.createdAt-a.createdAt);
+  const vip = games.filter(g=>g.type==="vip").sort((a,b)=>b.createdAt-a.createdAt);
+
+  const freeGrid = document.getElementById("freeGrid");
+  freeGrid.innerHTML = free.length
+    ? free.map(renderCard).join("")
+    : `<div class="empty-state"><b>Ainda sem jogos grátis</b>Em breve novidades da matilha 🐺</div>`;
+
+  const vipGrid = document.getElementById("vipGrid");
+  vipGrid.innerHTML = vip.length
+    ? vip.map(renderCard).join("")
+    : `<div class="empty-state"><b>Ainda sem jogos VIP</b>Fica atento, chegam em breve ⭐</div>`;
+
+  const featured = games.slice().sort((a,b)=>b.createdAt-a.createdAt).slice(0,3);
+  document.getElementById("homeFeaturedGrid").innerHTML = featured.length
+    ? featured.map(renderCard).join("")
+    : `<div class="empty-state"><b>Nenhum jogo publicado</b>Volta em breve!</div>`;
+
+  document.getElementById("statGames").textContent = free.length;
+  document.getElementById("statVip").textContent = vip.length;
+  const totalComments = Object.values(comments).reduce((a,c)=>a+c.length,0);
+  document.getElementById("statComments").textContent = totalComments;
+}
+
+/* ================= ADMIN ================= */
+function tryLogin(){
+  const val = document.getElementById("adminPass").value;
+  if(val === ADMIN_PASSWORD){
+    isAdmin = true;
+    sessionStorage.setItem("wolf_admin","1");
+    renderAdmin();
+  } else {
+    document.getElementById("adminErr").textContent = "Senha incorreta. Tenta novamente.";
+    document.getElementById("adminPass").value="";
+  }
+}
+function adminLogout(){
+  isAdmin = false;
+  sessionStorage.removeItem("wolf_admin");
+  document.getElementById("adminPass").value="";
+  document.getElementById("adminErr").textContent="";
+  renderAdmin();
+}
+function renderAdmin(){
+  const gate = document.getElementById("adminGate");
+  const panel = document.getElementById("adminPanel");
+  if(isAdmin){
+    gate.style.display="none";
+    panel.classList.add("open");
+    resetForm();
+    renderAdminList();
+  } else {
+    gate.style.display="block";
+    panel.classList.remove("open");
+  }
+}
+
+function setAdminTab(tab){
+  document.getElementById("tabAddBtn").classList.toggle("active", tab==="add");
+  document.getElementById("tabListBtn").classList.toggle("active", tab==="list");
+  document.getElementById("gameForm").style.display = tab==="add" ? "grid" : "none";
+  document.getElementById("adminList").style.display = tab==="list" ? "flex" : "none";
+  if(tab==="add") resetForm();
+}
+
+document.getElementById("fType").addEventListener("change", updateFormFields);
+function updateFormFields(){
+  const isVip = document.getElementById("fType").value === "vip";
+  document.getElementById("freeFieldWrap").style.display = isVip ? "none" : "block";
+  document.getElementById("vipFieldWrap").style.display = isVip ? "block" : "none";
+}
+
+function resetForm(){
+  document.getElementById("gameForm").reset();
+  document.getElementById("editId").value="";
+  document.getElementById("submitBtn").textContent="Publicar jogo";
+  updateFormFields();
+  setAdminTab('add');
+}
+
+document.getElementById("gameForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  const id = document.getElementById("editId").value;
+  const type = document.getElementById("fType").value;
+  const name = document.getElementById("fName").value.trim();
+  const genre = document.getElementById("fGenre").value.trim();
+  const desc = document.getElementById("fDesc").value.trim();
+  const img = document.getElementById("fImg").value.trim();
+  const link = document.getElementById("fLink").value.trim();
+  const price = document.getElementById("fPrice").value.trim();
+
+  if(!name){ showToast("Dá um nome ao jogo."); return; }
+
+  if(id){
+    const g = games.find(x=>x.id===id);
+    if(g){
+      Object.assign(g,{type,name,genre,desc,img,link,price});
+    }
+  } else {
+    games.push({id:uid(),type,name,genre,desc,img,link,price,createdAt:Date.now()});
+  }
+  saveGames(games);
+  renderAll();
+  renderAdminList();
+  resetForm();
+  showToast(id ? "Jogo atualizado ✅" : "Jogo publicado ✅");
+  setAdminTab('list');
+});
+
+function renderAdminList(){
+  const list = document.getElementById("adminList");
+  if(!games.length){
+    list.innerHTML = `<div class="admin-empty">Nenhum jogo publicado ainda.</div>`;
+    return;
+  }
+  const sorted = games.slice().sort((a,b)=>b.createdAt-a.createdAt);
+  list.innerHTML = sorted.map(g=>`
+    <div class="admin-row">
+      ${g.img ? `<img src="${escapeHtml(g.img)}" onerror="this.style.display='none'">` : `<div style="width:64px;height:44px;background:var(--panel2);border-radius:6px;"></div>`}
+      <div class="info">
+        <b>${escapeHtml(g.name)} <span class="tag ${g.type}">${g.type==='vip'?'VIP':'Grátis'}</span></b>
+        <span>${escapeHtml(g.genre||'')} ${g.type==='vip' ? '· '+escapeHtml(g.price||'') : ''}</span>
+      </div>
+      <div class="row-actions">
+        <button onclick="editGame('${g.id}')">✏️ Editar</button>
+        <button class="del" onclick="deleteGame('${g.id}')">🗑️ Apagar</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function editGame(id){
+  const g = games.find(x=>x.id===id);
+  if(!g) return;
+  setAdminTab('add');
+  document.getElementById("editId").value = g.id;
+  document.getElementById("fType").value = g.type;
+  document.getElementById("fName").value = g.name;
+  document.getElementById("fGenre").value = g.genre||"";
+  document.getElementById("fDesc").value = g.desc||"";
+  document.getElementById("fImg").value = g.img||"";
+  document.getElementById("fLink").value = g.link||"";
+  document.getElementById("fPrice").value = g.price||"";
+  updateFormFields();
+  document.getElementById("submitBtn").textContent="Guardar alterações";
+  document.getElementById("gameForm").scrollIntoView({behavior:"smooth"});
+}
+
+function deleteGame(id){
+  if(!confirm("Tens a certeza que queres apagar este jogo?")) return;
+  games = games.filter(x=>x.id!==id);
+  saveGames(games);
+  delete comments[id]; saveComments();
+  delete reactions[id]; saveReactions();
+  renderAll();
+  renderAdminList();
+  showToast("Jogo apagado 🗑️");
+}
+
+document.getElementById("adminPass").addEventListener("keydown", e=>{
+  if(e.key==="Enter") tryLogin();
+});
+
+/* ---------- init ---------- */
+updateFormFields();
+renderAll();
+if(isAdmin) { /* mantém sessão se já logado */ }
+
+</script>
+</body>
+</html>
