@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZonaXP Admin - Banners e Destaques</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f5f7fa;
+            color: #1e293b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            padding: 16px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .logo { font-size: 1.3rem; font-weight: 700; color: #4f46e5; }
+        .back-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: #475569;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .secao { margin-bottom: 30px; }
+        .secao h3 {
+            margin-bottom: 15px;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lista { display: flex; flex-direction: column; gap: 10px; }
+        .item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 15px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-left: 4px solid #4f46e5;
+        }
+        .item.destaque { border-left-color: #f59e0b; }
+        .item .info { flex: 1; min-width: 150px; }
+        .item .info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .item .info p { font-size: 0.75rem; color: #94a3b8; }
+        .btn-acao {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .btn-excluir { background: #fee2e2; color: #ef4444; }
+        .btn-add { background: #dbeafe; color: #2563eb; }
+        .vazio { text-align: center; padding: 40px; color: #94a3b8; background: #fff; border-radius: 14px; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+        .toast.ativo { display: block; }
+        .toast.erro { background: #ef4444; }
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal.ativo { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { margin-bottom: 15px; color: #4f46e5; }
+        .modal-content .jogo-opcao {
+            padding: 10px;
+            border-radius: 10px;
+            background: #f8fafc;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-content .jogo-opcao:hover { background: #e2e8f0; }
+        .modal-content .fechar {
+            width: 100%;
+            padding: 12px;
+            background: #4f46e5;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">🎪 Banners e Destaques</div>
+        <a href="dashboard.html" class="back-btn">← Voltar</a>
+    </div>
+
+    <!-- BANNERS -->
+    <div class="secao">
+        <h3>🎪 Banners Ativos (carrossel)</h3>
+        <button class="btn-acao btn-add" style="width:100%;padding:12px;margin-bottom:10px;" onclick="abrirSeletor('banner')">➕ Adicionar Banner</button>
+        <div class="lista" id="listaBanners"></div>
+    </div>
+
+    <!-- DESTAQUES -->
+    <div class="secao">
+        <h3>⭐ Destaques Ativos</h3>
+        <button class="btn-acao btn-add" style="width:100%;padding:12px;margin-bottom:10px;" onclick="abrirSeletor('destaque')">➕ Adicionar Destaque</button>
+        <div class="lista" id="listaDestaques"></div>
+    </div>
+</div>
+
+<!-- MODAL SELETOR -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3 id="modalTitulo">Selecionar Jogo</h3>
+        <div id="modalLista"></div>
+        <button class="fechar" onclick="fecharModal()">Fechar</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const API_URL = 'https://zona-backend-v3h1.onrender.com';
+
+    if (localStorage.getItem('adminLogado') !== 'true') {
+        window.location.href = 'index.html';
+    }
+
+    let jogosData = [];
+    let tipoSelecao = '';
+
+    function mostrarToast(msg, erro = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ativo' + (erro ? ' erro' : '');
+        setTimeout(() => t.className = 'toast', 3000);
+    }
+
+    async function carregarJogos() {
+        try {
+            const res = await fetch(API_URL + '/api/jogos');
+            const data = await res.json();
+            jogosData = data.jogos || [];
+            renderizar();
+        } catch (e) {
+            mostrarToast('Erro ao carregar', true);
+        }
+    }
+
+    function renderizar() {
+        // Banners
+        const listaBanners = document.getElementById('listaBanners');
+        const banners = jogosData.filter(j => j.banner);
+        if (banners.length === 0) {
+            listaBanners.innerHTML = '<div class="vazio">Nenhum banner ativo</div>';
+        } else {
+            listaBanners.innerHTML = '';
+            banners.forEach(jogo => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <div class="info">
+                        <h4>${jogo.nome}</h4>
+                        <p>${jogo.categoria} • ${jogo.plataforma}</p>
+                    </div>
+                    <button class="btn-acao btn-excluir" onclick="remover(${jogo.id}, 'banner')">Remover</button>
+                `;
+                listaBanners.appendChild(div);
+            });
+        }
+
+        // Destaques
+        const listaDestaques = document.getElementById('listaDestaques');
+        const destaques = jogosData.filter(j => j.destaque);
+        if (destaques.length === 0) {
+            listaDestaques.innerHTML = '<div class="vazio">Nenhum destaque ativo</div>';
+        } else {
+            listaDestaques.innerHTML = '';
+            destaques.forEach(jogo => {
+                const div = document.createElement('div');
+                div.className = 'item destaque';
+                div.innerHTML = `
+                    <div class="info">
+                        <h4>${jogo.nome}</h4>
+                        <p>${jogo.categoria} • ${jogo.plataforma}</p>
+                    </div>
+                    <button class="btn-acao btn-excluir" onclick="remover(${jogo.id}, 'destaque')">Remover</button>
+                `;
+                listaDestaques.appendChild(div);
+            });
+        }
+    }
+
+    function abrirSeletor(tipo) {
+        tipoSelecao = tipo;
+        const modal = document.getElementById('modal');
+        const titulo = document.getElementById('modalTitulo');
+        const lista = document.getElementById('modalLista');
+
+        titulo.textContent = tipo === 'banner' ? 'Selecionar Jogo para Banner' : 'Selecionar Jogo para Destaque';
+
+        // Filtrar jogos que ainda não estão no tipo
+        const disponiveis = jogosData.filter(j => {
+            if (tipo === 'banner') return !j.banner;
+            return !j.destaque;
+        });
+
+        if (disponiveis.length === 0) {
+            lista.innerHTML = '<div class="vazio">Todos os jogos já estão nesta lista</div>';
+        } else {
+            lista.innerHTML = '';
+            disponiveis.forEach(jogo => {
+                const div = document.createElement('div');
+                div.className = 'jogo-opcao';
+                div.onclick = () => adicionar(jogo.id, tipo);
+                div.innerHTML = `
+                    <div>
+                        <strong>${jogo.nome}</strong>
+                        <div style="font-size:0.75rem;color:#94a3b8;">${jogo.categoria} • ${jogo.plataforma}</div>
+                    </div>
+                    <span>➕</span>
+                `;
+                lista.appendChild(div);
+            });
+        }
+
+        modal.classList.add('ativo');
+    }
+
+    function fecharModal() {
+        document.getElementById('modal').classList.remove('ativo');
+    }
+
+    async function adicionar(id, tipo) {
+        const jogo = jogosData.find(j => j.id === id);
+        if (!jogo) return;
+
+        const atualizacao = tipo === 'banner' ? { ...jogo, banner: true } : { ...jogo, destaque: true };
+
+        try {
+            await fetch(`${API_URL}/api/jogos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(atualizacao)
+            });
+            await carregarJogos();
+            fecharModal();
+            mostrarToast(tipo === 'banner' ? 'Banner adicionado!' : 'Destaque adicionado!');
+        } catch (e) {
+            mostrarToast('Erro', true);
+        }
+    }
+
+    async function remover(id, tipo) {
+        const jogo = jogosData.find(j => j.id === id);
+        if (!jogo) return;
+
+        const atualizacao = tipo === 'banner' ? { ...jogo, banner: false } : { ...jogo, destaque: false };
+
+        try {
+            await fetch(`${API_URL}/api/jogos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(atualizacao)
+            });
+            await carregarJogos();
+            mostrarToast(tipo === 'banner' ? 'Banner removido' : 'Destaque removido');
+        } catch (e) {
+            mostrarToast('Erro', true);
+        }
+    }
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if (e.target.id === 'modal') fecharModal();
+    });
+
+    carregarJogos();
+</script>
+
+</body>
+</html>

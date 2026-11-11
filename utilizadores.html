@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZonaXP Admin — Utilizadores</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #ffffff;
+    --muted: #b0b0b0;
+    --border: #333333;
+    --accent: #ff004f;
+    --gold: #ffaa00;
+    --green: #0f9d58;
+    --blue: #2563eb;
+    --red: #ef4444;
+  }
+
+  [data-theme="light"] {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  .header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .logo { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+  .logo span { color: var(--text); }
+
+  .back-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 8px 18px;
+    border-radius: 30px;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .card h3 {
+    margin-bottom: 15px;
+    color: var(--accent);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Pesquisa */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap::before {
+    content: "🔍";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  /* Lista de utilizadores */
+  .user-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .user-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-info .nome {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .user-info .meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .user-badge {
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .user-badge.green { color: var(--green); border-color: var(--green); }
+
+  /* Detalhes */
+  .detail-section { display: none; }
+  .detail-section.active { display: block; }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .detail-header .avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.6rem;
+  }
+  .detail-header .info h2 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  .detail-header .info p {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { opacity: 0.9; color: #fff; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .info-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .info-box .label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .info-box .value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    word-break: break-word;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 20px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-row .info-box { text-align: center; }
+  .stat-row .info-box .value { font-size: 1.4rem; color: var(--accent); }
+
+  .linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    gap: 12px;
+  }
+  .linha:last-child { border-bottom: none; }
+  .linha .nome {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .linha .tag {
+    font-size: 0.72rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .linha .tag.hot { color: var(--accent); border-color: var(--accent); }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 16px 0;
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px;
+    font-size: 0.9rem;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo">ZonaXP <span>Admin</span></div>
+    <a href="dashboard.html" class="back-btn">← Voltar ao Dashboard</a>
+  </div>
+
+  <!-- ============ LISTA ============ -->
+  <div id="viewLista">
+    <div class="card">
+      <h3>👥 Utilizadores <span id="countUsers" class="user-badge">0</span></h3>
+
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Pesquisar por nome, nickname ou WhatsApp…">
+      </div>
+
+      <div id="listaUsers" class="loading">A carregar utilizadores…</div>
+    </div>
+  </div>
+
+  <!-- ============ DETALHE ============ -->
+  <div id="viewDetalhe" class="detail-section">
+
+    <div class="card">
+      <div class="detail-actions">
+        <button class="btn" onclick="voltarLista()">← Voltar à lista</button>
+      </div>
+
+      <div class="detail-header">
+        <div class="avatar" id="dAvatar">?</div>
+        <div class="info">
+          <h2 id="dNome">—</h2>
+          <p id="dNick">—</p>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <a id="dWhatsBtn" class="btn primary" href="#" target="_blank">💬 Abrir WhatsApp</a>
+        <a id="dMsgBtn" class="btn" href="mensagens.html">✉️ Ver mensagens</a>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="label">WhatsApp</div>
+          <div class="value" id="dWhats">—</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Cidade</div>
+          <div class="value" id="dCidade">—</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Nacionalidade</div>
+          <div class="value" id="dNacionalidade">—</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Data de Registo</div>
+          <div class="value" id="dRegisto">—</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Último Acesso</div>
+          <div class="value" id="dUltimo">—</div>
+        </div>
+        <div class="info-box">
+          <div class="label">ID</div>
+          <div class="value" id="dId">—</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="info-box">
+          <div class="label">Downloads</div>
+          <div class="value" id="dHistorico">0</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Favoritos</div>
+          <div class="value" id="dFavoritos">0</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Likes</div>
+          <div class="value" id="dLikes">0</div>
+        </div>
+        <div class="info-box">
+          <div class="label">Dislikes</div>
+          <div class="value" id="dDislikes">0</div>
+        </div>
+      </div>
+
+      <div class="section-title">📜 Histórico de Downloads</div>
+      <div id="listaHistorico" class="empty">Sem downloads registados.</div>
+
+      <div class="section-title">⭐ Favoritos</div>
+      <div id="listaFavoritos" class="empty">Sem favoritos.</div>
+
+      <div class="section-title">❤️ Jogos com Like</div>
+      <div id="listaCurtidos" class="empty">Sem likes dados.</div>
+
+      <div class="section-title">👎 Jogos com Dislike</div>
+      <div id="listaNaoCurtidos" class="empty">Sem dislikes dados.</div>
+
+      <div class="section-title">📝 Bio</div>
+      <div class="info-box" style="margin-bottom:20px;">
+        <div class="value" id="dBio" style="font-weight:400;">—</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+const API = 'https://zona-backend-v3h1.onrender.com';
+
+/* =========================================================
+   PROTEÇÃO ADMIN
+========================================================= */
+if (localStorage.getItem('adminLogado') !== 'true') {
+  window.location.replace('index.html');
+}
+
+/* =========================================================
+   TEMA
+========================================================= */
+document.documentElement.setAttribute(
+  'data-theme',
+  localStorage.getItem('theme') || 'dark'
+);
+
+/* =========================================================
+   ESTADO
+========================================================= */
+let usersCache = [];
+let jogosCache = [];
+let currentUser = null;
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function fmtData(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleString('pt-PT', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch { return '—'; }
+}
+
+function iniciais(nome) {
+  if (!nome) return '?';
+  const partes = nome.trim().split(/\s+/);
+  return ((partes[0]?.[0] || '') + (partes[1]?.[0] || '')).toUpperCase() || '?';
+}
+
+function avatarHTML(u) {
+  if (u.foto) return `<img src="${u.foto}" alt="" onerror="this.style.display='none'">`;
+  return iniciais(u.nome);
+}
+
+/* =========================================================
+   API
+========================================================= */
+async function carregarUtilizadores() {
+  try {
+    const res = await fetch(`${API}/api/utilizadores`);
+    if (!res.ok) throw new Error('Falha API');
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.utilizadores || []);
+  } catch (e) {
+    console.error('Erro utilizadores:', e);
+    return [];
+  }
+}
+
+async function carregarJogos() {
+  try {
+    const res = await fetch(`${API}/api/jogos`);
+    if (!res.ok) throw new Error('Falha API');
+    const data = await res.json();
+    let jogos = Array.isArray(data) ? data : (data.jogos || []);
+    if (jogos.length === 0) {
+      const gh = await fetch('https://raw.githubusercontent.com/BertoB6/Zona-backend/main/dados/jogos.json');
+      if (gh.ok) {
+        const gd = await gh.json();
+        jogos = gd.jogos || [];
+      }
+    }
+    return jogos;
+  } catch (e) {
+    console.error('Erro jogos:', e);
+    return [];
+  }
+}
+
+/* =========================================================
+   RENDER LISTA
+========================================================= */
+function renderLista(filtro = '') {
+  const el = document.getElementById('listaUsers');
+  const f = filtro.trim().toLowerCase();
+
+  const lista = usersCache.filter(u => {
+    if (!f) return true;
+    return (
+      (u.nome || '').toLowerCase().includes(f) ||
+      (u.nickname || '').toLowerCase().includes(f) ||
+      (u.whatsapp || '').toString().includes(f)
+    );
+  });
+
+  if (lista.length === 0) {
+    el.innerHTML = `<div class="empty">${usersCache.length === 0 ? 'Sem utilizadores registados.' : 'Nenhum resultado.'}</div>`;
+    return;
+  }
+
+  el.innerHTML = lista.map(u => `
+    <div class="user-card" onclick="abrirDetalhe(${u.id})">
+      <div class="avatar">${avatarHTML(u)}</div>
+      <div class="user-info">
+        <div class="nome">${u.nome || 'Sem nome'}</div>
+        <div class="meta">
+          <span>@${u.nickname || '—'}</span>
+          <span>📱 ${u.whatsapp || '—'}</span>
+          <span>📅 ${fmtData(u.dataRegisto).split(' ')[0]}</span>
+        </div>
+      </div>
+      <span class="user-badge green">${(u.historico || []).length} ⬇</span>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   RENDER DETALHE
+========================================================= */
+function nomeJogo(id) {
+  const j = jogosCache.find(x => String(x.id) === String(id));
+  return j ? j.nome : `Jogo #${id}`;
+}
+
+function renderListaJogos(containerId, ids, vazio) {
+  const el = document.getElementById(containerId);
+  if (!ids || ids.length === 0) {
+    el.innerHTML = `<div class="empty">${vazio}</div>`;
+    return;
+  }
+  el.innerHTML = ids.map(id => {
+    const j = jogosCache.find(x => String(x.id) === String(id));
+    const nome = j ? j.nome : `Jogo #${id}`;
+    const tag = j ? j.plataforma || '—' : '—';
+    return `
+      <div class="linha">
+        <span class="nome">${nome}</span>
+        <span class="tag">${tag}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function abrirDetalhe(id) {
+  const u = usersCache.find(x => x.id === id);
+  if (!u) return;
+  currentUser = u;
+
+  document.getElementById('viewLista').classList.add('hidden');
+  document.getElementById('viewDetalhe').classList.add('active');
+
+  // Cabeçalho
+  document.getElementById('dAvatar').innerHTML = avatarHTML(u);
+  document.getElementById('dNome').textContent = u.nome || 'Sem nome';
+  document.getElementById('dNick').textContent = `@${u.nickname || 'sem nickname'}`;
+
+  // Info
+  document.getElementById('dWhats').textContent = u.whatsapp || '—';
+  document.getElementById('dCidade').textContent = u.cidade || '—';
+  document.getElementById('dNacionalidade').textContent = u.nacionalidade || '—';
+  document.getElementById('dRegisto').textContent = fmtData(u.dataRegisto);
+  document.getElementById('dUltimo').textContent = fmtData(u.ultimoAcesso);
+  document.getElementById('dId').textContent = u.id ?? '—';
+  document.getElementById('dBio').textContent = u.bio || 'Sem bio.';
+
+  // WhatsApp link
+  const wBtn = document.getElementById('dWhatsBtn');
+  if (u.whatsapp) {
+    wBtn.href = `https://wa.me/258${u.whatsapp}`;
+    wBtn.style.display = 'inline-block';
+  } else {
+    wBtn.style.display = 'none';
+  }
+
+  // Contadores
+  const historico = u.historico || [];
+  const favoritos = u.favoritos || [];
+  const likesObj = u.likes || {};
+  const curtidos = Object.keys(likesObj).filter(k => likesObj[k] === true);
+  const naoCurtidos = Object.keys(likesObj).filter(k => likesObj[k] === false);
+
+  document.getElementById('dHistorico').textContent = historico.length;
+  document.getElementById('dFavoritos').textContent = favoritos.length;
+  document.getElementById('dLikes').textContent = curtidos.length;
+  document.getElementById('dDislikes').textContent = naoCurtidos.length;
+
+  // Listas
+  renderListaJogos('listaHistorico', historico, 'Sem downloads registados.');
+  renderListaJogos('listaFavoritos', favoritos, 'Sem favoritos.');
+  renderListaJogos('listaCurtidos', curtidos, 'Sem likes dados.');
+  renderListaJogos('listaNaoCurtidos', naoCurtidos, 'Sem dislikes dados.');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function voltarLista() {
+  document.getElementById('viewDetalhe').classList.remove('active');
+  document.getElementById('viewLista').classList.remove('hidden');
+  currentUser = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+async function init() {
+  // Buscar utilizadores e jogos em paralelo
+  const [users, jogos] = await Promise.all([
+    carregarUtilizadores(),
+    carregarJogos()
+  ]);
+
+  usersCache = users;
+  jogosCache = jogos;
+
+  document.getElementById('countUsers').textContent = users.length;
+
+  renderLista();
+
+  // Pesquisa em tempo real
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    renderLista(e.target.value);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

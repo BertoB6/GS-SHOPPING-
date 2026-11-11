@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZonaXP Admin — Estatísticas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #ffffff;
+    --muted: #b0b0b0;
+    --border: #333333;
+    --accent: #ff004f;
+    --gold: #ffaa00;
+    --green: #0f9d58;
+    --blue: #2563eb;
+  }
+
+  [data-theme="light"] {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  .header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .logo { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+  .logo span { color: var(--text); }
+
+  .back-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 8px 18px;
+    border-radius: 30px;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .card h3 {
+    margin-bottom: 15px;
+    color: var(--accent);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-box .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-box .label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    gap: 12px;
+  }
+  .linha:last-child { border-bottom: none; }
+
+  .linha .pos {
+    font-weight: bold;
+    color: var(--gold);
+    min-width: 34px;
+    font-size: 0.95rem;
+  }
+  .linha .nome {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .linha .valor {
+    font-weight: bold;
+    color: var(--green);
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 14px 0;
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    margin-left: 6px;
+  }
+  .tag.hot { color: var(--accent); border-color: var(--accent); }
+  .tag.warn { color: var(--gold); border-color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo">ZonaXP <span>Admin</span></div>
+    <a href="dashboard.html" class="back-btn">← Voltar ao Dashboard</a>
+  </div>
+
+  <!-- Resumo geral -->
+  <div class="card">
+    <h3>📊 Resumo Geral</h3>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="num" id="totalJogos">—</div>
+        <div class="label">Jogos</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="totalLikes">—</div>
+        <div class="label">Likes Totais</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="totalDislikes">—</div>
+        <div class="label">Dislikes Totais</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="totalDestaques">—</div>
+        <div class="label">Em Destaque</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="totalBanners">—</div>
+        <div class="label">Banners</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="totalPartilha">—</div>
+        <div class="label">Com Partilha</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top jogos -->
+  <div class="card">
+    <h3>🏆 Top 10 — Mais Likes</h3>
+    <div id="topLikes" class="loading">A carregar…</div>
+  </div>
+
+  <div class="card">
+    <h3>👎 Top 10 — Mais Dislikes</h3>
+    <div id="topDislikes" class="loading">A carregar…</div>
+  </div>
+
+  <div class="card">
+    <h3>⭐ Destaques Ativos</h3>
+    <div id="listaDestaques" class="loading">A carregar…</div>
+  </div>
+
+  <div class="card">
+    <h3>🎞️ Banners Ativos</h3>
+    <div id="listaBanners" class="loading">A carregar…</div>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ Jogos sem Likes</h3>
+    <div id="semLikes" class="loading">A carregar…</div>
+  </div>
+
+  <div class="card">
+    <h3>🔒 Jogos com Partilha Obrigatória</h3>
+    <div id="listaPartilha" class="loading">A carregar…</div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+const API = 'https://zona-backend-v3h1.onrender.com';
+
+/* =========================================================
+   PROTEÇÃO DE SESSÃO ADMIN
+========================================================= */
+if (localStorage.getItem('adminLogado') !== 'true') {
+  window.location.replace('index.html');
+}
+
+/* =========================================================
+   TEMA (segue o resto do admin)
+========================================================= */
+const temaGuardado = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', temaGuardado);
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function fmt(n) {
+  return Number(n || 0).toLocaleString('pt-PT');
+}
+
+function linhaRank(i, nome, valor, extraTag = '') {
+  return `
+    <div class="linha">
+      <span class="pos">#${i + 1}</span>
+      <span class="nome">${nome}${extraTag}</span>
+      <span class="valor">${fmt(valor)}</span>
+    </div>
+  `;
+}
+
+function renderRank(containerId, lista, campoValor, campoNome = 'nome') {
+  const el = document.getElementById(containerId);
+  if (!lista || lista.length === 0) {
+    el.innerHTML = '<div class="empty">Sem dados disponíveis.</div>';
+    return;
+  }
+  el.innerHTML = lista
+    .map((item, i) => linhaRank(i, item[campoNome], item[campoValor]))
+    .join('');
+}
+
+function renderListaSimples(containerId, lista, renderFn, vazio = 'Sem dados disponíveis.') {
+  const el = document.getElementById(containerId);
+  if (!lista || lista.length === 0) {
+    el.innerHTML = `<div class="empty">${vazio}</div>`;
+    return;
+  }
+  el.innerHTML = lista.map(renderFn).join('');
+}
+
+/* =========================================================
+   CARREGAR JOGOS
+========================================================= */
+async function carregarJogos() {
+  try {
+    const res = await fetch(`${API}/api/jogos`);
+    if (!res.ok) throw new Error('Falha na API');
+    const data = await res.json();
+
+    // A API pode devolver { jogos: [...] } ou array direto
+    let jogos = Array.isArray(data) ? data : (data.jogos || []);
+
+    // Se vier vazio, tenta o ficheiro bruto do GitHub (fallback)
+    if (jogos.length === 0) {
+      const gh = await fetch('https://raw.githubusercontent.com/BertoB6/Zona-backend/main/dados/jogos.json');
+      if (gh.ok) {
+        const ghData = await gh.json();
+        jogos = ghData.jogos || [];
+      }
+    }
+    return jogos;
+  } catch (err) {
+    console.error('Erro ao carregar jogos:', err);
+    return [];
+  }
+}
+
+/* =========================================================
+   RENDER GERAL
+========================================================= */
+async function init() {
+  const jogos = await carregarJogos();
+
+  if (jogos.length === 0) {
+    document.querySelectorAll('.loading').forEach(e => {
+      e.textContent = 'Não foi possível carregar os dados.';
+      e.classList.remove('loading');
+      e.classList.add('empty');
+    });
+    return;
+  }
+
+  /* --------- Resumo --------- */
+  const totalLikes = jogos.reduce((s, j) => s + (j.likes || 0), 0);
+  const totalDislikes = jogos.reduce((s, j) => s + (j.dislikes || 0), 0);
+
+  document.getElementById('totalJogos').textContent = fmt(jogos.length);
+  document.getElementById('totalLikes').textContent = fmt(totalLikes);
+  document.getElementById('totalDislikes').textContent = fmt(totalDislikes);
+  document.getElementById('totalDestaques').textContent = fmt(jogos.filter(j => j.destaque).length);
+  document.getElementById('totalBanners').textContent = fmt(jogos.filter(j => j.banner).length);
+  document.getElementById('totalPartilha').textContent = fmt(jogos.filter(j => j.partilha_ativa).length);
+
+  /* --------- Top Likes --------- */
+  const topLikes = [...jogos]
+    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+    .slice(0, 10);
+  renderRank('topLikes', topLikes, 'likes');
+
+  /* --------- Top Dislikes --------- */
+  const topDislikes = [...jogos]
+    .sort((a, b) => (b.dislikes || 0) - (a.dislikes || 0))
+    .slice(0, 10);
+  renderRank('topDislikes', topDislikes, 'dislikes');
+
+  /* --------- Destaques ativos --------- */
+  const destaques = jogos.filter(j => j.destaque);
+  renderListaSimples(
+    'listaDestaques',
+    destaques,
+    j => `
+      <div class="linha">
+        <span class="nome">⭐ ${j.nome}</span>
+        <span class="tag">${j.plataforma || '—'}</span>
+        <span class="tag hot">${fmt(j.likes)} ♥</span>
+      </div>
+    `,
+    'Sem destaques ativos.'
+  );
+
+  /* --------- Banners ativos --------- */
+  const banners = jogos.filter(j => j.banner);
+  renderListaSimples(
+    'listaBanners',
+    banners,
+    j => `
+      <div class="linha">
+        <span class="nome">🎞️ ${j.nome}</span>
+        <span class="tag">${j.plataforma || '—'}</span>
+        <span class="tag warn">${j.categoria || '—'}</span>
+      </div>
+    `,
+    'Sem banners ativos.'
+  );
+
+  /* --------- Jogos sem likes --------- */
+  const semLikes = jogos.filter(j => (j.likes || 0) === 0);
+  renderListaSimples(
+    'semLikes',
+    semLikes,
+    j => `
+      <div class="linha">
+        <span class="nome">${j.nome}</span>
+        <span class="tag">${j.plataforma || '—'}</span>
+        <span class="tag warn">0 likes</span>
+      </div>
+    `,
+    'Todos os jogos já têm likes.'
+  );
+
+  /* --------- Jogos com partilha --------- */
+  const comPartilha = jogos.filter(j => j.partilha_ativa);
+  renderListaSimples(
+    'listaPartilha',
+    comPartilha,
+    j => `
+      <div class="linha">
+        <span class="nome">🔒 ${j.nome}</span>
+        <span class="tag hot">${j.partilhas_necessarias || 0} partilhas</span>
+      </div>
+    `,
+    'Nenhum jogo exige partilha.'
+  );
+}
+
+init();
+</script>
+</body>
+</html>

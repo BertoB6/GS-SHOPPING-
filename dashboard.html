@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZonaXP Admin - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f5f7fa;
+            color: #1e293b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            padding: 16px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; color: #4f46e5; }
+        .btn-sair {
+            background: #fee2e2;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: #ef4444;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-card .icon { font-size: 2rem; margin-bottom: 8px; }
+        .stat-card .numero { font-size: 1.8rem; font-weight: 700; }
+        .stat-card .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; }
+        .menu-grid { display: flex; flex-direction: column; gap: 10px; }
+        .menu-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            border: none;
+            text-align: left;
+            color: #1e293b;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+        .menu-item:hover { transform: translateX(6px); box-shadow: 0 4px 12px rgba(79,70,229,0.12); }
+        .menu-item .icon {
+            font-size: 1.6rem;
+            width: 48px;
+            height: 48px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-item .info { flex: 1; }
+        .menu-item .info h4 { font-size: 1rem; font-weight: 600; }
+        .menu-item .info p { font-size: 0.75rem; color: #94a3b8; }
+        .menu-item .seta { color: #cbd5e1; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">🎮 ZonaXP Admin</div>
+        <button class="btn-sair" onclick="logout()">Sair</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="stat-card">
+            <div class="icon">🎮</div>
+            <div class="numero" id="totalJogos">0</div>
+            <div class="label">Jogos</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">👤</div>
+            <div class="numero" id="totalUtilizadores">0</div>
+            <div class="label">Utilizadores</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">💬</div>
+            <div class="numero" id="totalMensagens">0</div>
+            <div class="label">Mensagens</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">⭐</div>
+            <div class="numero" id="totalDestaques">0</div>
+            <div class="label">Destaques</div>
+        </div>
+    </div>
+
+    <div class="menu-grid">
+        <a href="gestao.html" class="menu-item">
+            <div class="icon">📝</div>
+            <div class="info"><h4>Gestão de Jogos</h4><p>Adicionar, editar e remover jogos</p></div>
+            <div class="seta">→</div>
+        </a>
+        <a href="utilizadores.html" class="menu-item">
+            <div class="icon">👤</div>
+            <div class="info"><h4>Utilizadores</h4><p>Ver contas registadas</p></div>
+            <div class="seta">→</div>
+        </a>
+        <a href="mensagens.html" class="menu-item">
+            <div class="icon">💬</div>
+            <div class="info"><h4>Mensagens</h4><p>Responder aos utilizadores</p></div>
+            <div class="seta">→</div>
+        </a>
+        <a href="banners.html" class="menu-item">
+            <div class="icon">🎪</div>
+            <div class="info"><h4>Banners e Destaques</h4><p>Gerir o carrossel e destaques</p></div>
+            <div class="seta">→</div>
+        </a>
+        <a href="estatisticas.html" class="menu-item">
+            <div class="icon">📊</div>
+            <div class="info"><h4>Estatísticas</h4><p>Likes, destaques e rankings</p></div>
+            <div class="seta">→</div>
+        </a>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'https://zona-backend-v3h1.onrender.com';
+
+    // Verificar login
+    if (localStorage.getItem('adminLogado') !== 'true') {
+        window.location.href = 'index.html';
+    }
+
+    function logout() {
+        localStorage.removeItem('adminLogado');
+        window.location.href = 'index.html';
+    }
+
+    async function carregarEstatisticas() {
+        try {
+            // Jogos
+            const resJogos = await fetch(API_URL + '/api/jogos');
+            const dataJogos = await resJogos.json();
+            const jogos = dataJogos.jogos || [];
+            document.getElementById('totalJogos').textContent = jogos.length;
+            document.getElementById('totalDestaques').textContent = jogos.filter(j => j.destaque).length;
+
+            // Mensagens
+            const resMsgs = await fetch(API_URL + '/api/mensagens/admin/todas');
+            const dataMsgs = await resMsgs.json();
+            const conversas = dataMsgs.conversas || [];
+            const naoLidas = conversas.filter(c => 
+                c.mensagens && c.mensagens.some(m => m.de === 'utilizador' && m.lida === false)
+            ).length;
+            document.getElementById('totalMensagens').textContent = naoLidas;
+
+            // Utilizadores (tenta buscar)
+            try {
+                const resUsers = await fetch(API_URL + '/api/utilizadores');
+                if (resUsers.ok) {
+                    const dataUsers = await resUsers.json();
+                    document.getElementById('totalUtilizadores').textContent = (dataUsers.utilizadores || []).length;
+                }
+            } catch (e) {
+                document.getElementById('totalUtilizadores').textContent = '—';
+            }
+        } catch (e) {
+            console.error('Erro:', e);
+        }
+    }
+
+    carregarEstatisticas();
+</script>
+
+</body>
+</html>
