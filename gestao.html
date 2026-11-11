@@ -1,444 +1,1017 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZonaXP Admin - Gestão de Jogos</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #f5f7fa;
-            color: #1e293b;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            padding: 16px;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header {
-            background: #fff;
-            border-radius: 20px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .logo { font-size: 1.3rem; font-weight: 700; color: #4f46e5; }
-        .back-btn {
-            background: #f1f5f9;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            color: #475569;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .btn-add {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .form-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            display: none;
-        }
-        .form-card.ativo { display: block; }
-        .form-card h3 { margin-bottom: 20px; }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group.full { grid-column: 1/-1; }
-        .form-group label { font-size: 0.75rem; color: #64748b; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 10px 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            color: #1e293b;
-            font-family: inherit;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #4f46e5;
-        }
-        .form-group.checkbox {
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-        }
-        .form-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        .btn-salvar {
-            background: #4f46e5;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 30px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .btn-cancelar {
-            background: #f1f5f9;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 30px;
-            color: #475569;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .lista { display: flex; flex-direction: column; gap: 10px; }
-        .item {
-            background: #fff;
-            border-radius: 14px;
-            padding: 15px 18px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #4f46e5;
-            gap: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .item.destaque { border-left-color: #f59e0b; }
-        .item .info { flex: 1; min-width: 150px; }
-        .item .info h4 { font-size: 0.95rem; margin-bottom: 4px; }
-        .item .info p { font-size: 0.75rem; color: #94a3b8; }
-        .item .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-acao {
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .btn-editar { background: #dbeafe; color: #2563eb; }
-        .btn-excluir { background: #fee2e2; color: #ef4444; }
-        .btn-destaque { background: #fef3c7; color: #f59e0b; }
-        .vazio { text-align: center; padding: 40px; color: #94a3b8; }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #10b981;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: bold;
-            z-index: 1000;
-            display: none;
-        }
-        .toast.ativo { display: block; }
-        .toast.erro { background: #ef4444; }
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZonaXP Admin — Gestão de Jogos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #ffffff;
+    --muted: #b0b0b0;
+    --border: #333333;
+    --accent: #ff004f;
+    --gold: #ffaa00;
+    --green: #0f9d58;
+    --blue: #2563eb;
+    --red: #ef4444;
+  }
+
+  [data-theme="light"] {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .logo { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+  .logo span { color: var(--text); }
+
+  .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn.primary:hover { opacity: 0.9; color: #fff; }
+  .btn.danger { color: var(--red); border-color: var(--red); }
+  .btn.danger:hover { background: var(--red); color: #fff; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .toolbar .search-wrap {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+  }
+  .toolbar input[type="text"],
+  .toolbar select {
+    width: 100%;
+    padding: 11px 16px 11px 42px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+  }
+  .toolbar select {
+    padding-left: 16px;
+    min-width: 160px;
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+  .toolbar input:focus,
+  .toolbar select:focus { border-color: var(--accent); }
+  .search-wrap::before {
+    content: "🔍";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Grid 3 cards */
+  .grid-jogos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .grid-jogos { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .grid-jogos { grid-template-columns: 1fr; }
+  }
+
+  .jogo-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: 0.2s;
+  }
+  .jogo-card:hover { border-color: var(--accent); }
+
+  .jogo-card .thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg);
+    overflow: hidden;
+    position: relative;
+  }
+  .jogo-card .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .jogo-card .thumb .sem-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .jogo-card .badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .jogo-card .badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .badge.gold { background: var(--gold); color: #000; }
+  .badge.pink { background: var(--accent); }
+  .badge.green { background: var(--green); }
+
+  .jogo-card .body {
+    padding: 12px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .jogo-card .nome {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .jogo-card .meta {
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .jogo-card .meta .plat {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .jogo-card .stats {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+  }
+
+  .jogo-card .actions {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .jogo-card .actions button {
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .jogo-card .actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .jogo-card .actions button.del:hover { border-color: var(--red); color: var(--red); }
+  .jogo-card .actions button.star.active { color: var(--gold); border-color: var(--gold); }
+
+  /* MODAL / FORMULÁRIO */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .modal-bg.active { display: flex; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 780px;
+    padding: 24px;
+    margin: auto;
+  }
+  .modal h2 {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal h2 .close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+  .modal h2 .close:hover { color: var(--red); }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+  .form-group textarea.longa {
+    min-height: 200px;
+    white-space: pre-wrap;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.85rem;
+  }
+
+  .form-section-title {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .checkboxes {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 8px 0;
+  }
+  .checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .checkboxes input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 0.88rem;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.3s;
+    z-index: 200;
+    max-width: 320px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { border-left-color: var(--green); }
+  .toast.error { border-left-color: var(--red); }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 20px;
+    font-size: 0.95rem;
+  }
+
+  .loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 20px;
+    font-size: 0.95rem;
+  }
+
+  /* Pré-visualização da descrição longa */
+  .preview-desc {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow-y: auto;
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+  .preview-desc a { color: var(--blue); text-decoration: underline; }
+  .preview-desc:empty { display: none; }
+</style>
 </head>
 <body>
-
 <div class="container">
-    <div class="header">
-        <div class="logo">📝 Gestão de Jogos</div>
-        <a href="dashboard.html" class="back-btn">← Voltar</a>
+
+  <div class="header">
+    <div class="logo">ZonaXP <span>Admin</span></div>
+    <div class="header-actions">
+      <a href="dashboard.html" class="btn">← Dashboard</a>
+      <button class="btn primary" onclick="abrirFormulario()">➕ Adicionar Jogo</button>
     </div>
+  </div>
 
-    <button class="btn-add" onclick="abrirForm()">➕ Adicionar Jogo</button>
-
-    <div class="form-card" id="formCard">
-        <h3 id="formTitulo">➕ Adicionar Jogo</h3>
-        <div class="form-grid">
-            <div class="form-group full">
-                <label>🖼️ Imagem (URL)</label>
-                <input type="text" id="jogoImagem" placeholder="https://...">
-            </div>
-            <div class="form-group">
-                <label>Nome *</label>
-                <input type="text" id="jogoNome" placeholder="Ex: Max Payne">
-            </div>
-            <div class="form-group">
-                <label>Categoria *</label>
-                <input type="text" id="jogoCategoria" placeholder="Ex: Ação">
-            </div>
-            <div class="form-group">
-                <label>Plataforma</label>
-                <select id="jogoPlataforma">
-                    <option value="PSP">PSP</option>
-                    <option value="PS2">PS2</option>
-                    <option value="PC">PC</option>
-                    <option value="APK Android">APK Android</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tamanho</label>
-                <input type="text" id="jogoTamanho" placeholder="Ex: 1.4 GB">
-            </div>
-            <div class="form-group">
-                <label>Tipo</label>
-                <select id="jogoPago">
-                    <option value="false">Grátis</option>
-                    <option value="true">Pago</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Preço</label>
-                <input type="text" id="jogoPreco" placeholder="25 MT">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="text" id="jogoSenha" placeholder="Opcional">
-            </div>
-            <div class="form-group full">
-                <label>Link de Download</label>
-                <input type="text" id="jogoDownload" placeholder="https://...">
-            </div>
-            <div class="form-group full">
-                <label>Descrição Curta</label>
-                <input type="text" id="jogoDescricao" placeholder="Descrição resumida">
-            </div>
-            <div class="form-group full">
-                <label>Descrição Longa</label>
-                <textarea id="jogoDescricaoLonga" rows="3" placeholder="Descrição detalhada"></textarea>
-            </div>
-            <div class="form-group checkbox">
-                <input type="checkbox" id="jogoDestaque">
-                <label>⭐ Destaque</label>
-            </div>
-            <div class="form-group checkbox">
-                <input type="checkbox" id="jogoBanner">
-                <label>🎪 Banner</label>
-            </div>
-            <div class="form-group checkbox">
-                <input type="checkbox" id="jogoPartilha">
-                <label>📤 Exigir partilha antes de baixar</label>
-            </div>
-            <div class="form-group">
-                <label>Nº de partilhas necessárias</label>
-                <input type="number" id="jogoPartilhasNum" placeholder="Ex: 5" min="1" value="5">
-            </div>
-        </div>
-        <div class="form-buttons">
-            <button class="btn-cancelar" onclick="fecharForm()">Cancelar</button>
-            <button class="btn-salvar" onclick="salvarJogo()">💾 Guardar</button>
-        </div>
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Pesquisar por nome, categoria ou plataforma…">
     </div>
+    <select id="filtroPlataforma">
+      <option value="">Todas as plataformas</option>
+      <option value="PSP">PSP</option>
+      <option value="PS2">PS2</option>
+      <option value="PC">PC</option>
+      <option value="APK Android">APK Android</option>
+    </select>
+    <select id="filtroTipo">
+      <option value="">Todos os tipos</option>
+      <option value="gratis">Grátis</option>
+      <option value="pago">Pago</option>
+      <option value="destaque">Em destaque</option>
+      <option value="banner">Com banner</option>
+    </select>
+  </div>
 
-    <div class="lista" id="listaJogos"></div>
+  <!-- Grid -->
+  <div class="grid-jogos" id="gridJogos">
+    <div class="loading">A carregar jogos…</div>
+  </div>
+
 </div>
 
+<!-- ==================== MODAL FORMULÁRIO ==================== -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h2>
+      <span id="modalTitulo">Adicionar Jogo</span>
+      <button class="close" onclick="fecharFormulario()">✕</button>
+    </h2>
+
+    <form id="formJogo" onsubmit="guardarJogo(event)">
+      <div class="form-grid">
+
+        <div class="form-section-title">📋 Informações Básicas</div>
+
+        <div class="form-group full">
+          <label>Nome do Jogo *</label>
+          <input type="text" id="f_nome" required placeholder="Ex: Mortal Kombat 11">
+        </div>
+
+        <div class="form-group">
+          <label>Categoria</label>
+          <input type="text" id="f_categoria" placeholder="Ex: Luta, Futebol, Ação">
+        </div>
+
+        <div class="form-group">
+          <label>Plataforma *</label>
+          <select id="f_plataforma" required>
+            <option value="">— Escolher —</option>
+            <option value="PSP">PSP</option>
+            <option value="PS2">PS2</option>
+            <option value="PC">PC</option>
+            <option value="APK Android">APK Android</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tamanho</label>
+          <input type="text" id="f_tamanho" placeholder="Ex: 1.4 GB">
+        </div>
+
+        <div class="form-group">
+          <label>Senha (se houver)</label>
+          <input type="text" id="f_senha" placeholder="Opcional">
+        </div>
+
+        <div class="form-group full">
+          <label>URL da Imagem Principal</label>
+          <input type="url" id="f_imagem" placeholder="https://res.cloudinary.com/...">
+        </div>
+
+        <div class="form-group">
+          <label>Imagem 2</label>
+          <input type="url" id="f_imagem2" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Imagem 3</label>
+          <input type="url" id="f_imagem3" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Imagem 4</label>
+          <input type="url" id="f_imagem4" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Vídeo (YouTube/TikTok)</label>
+          <input type="url" id="f_video_url" placeholder="https://youtube.com/...">
+        </div>
+
+        <!-- ===== LINKS DE DOWNLOAD ===== -->
+        <div class="form-section-title">🔗 Links de Download</div>
+
+        <div class="form-group full">
+          <label>Link Principal *</label>
+          <input type="url" id="f_download" placeholder="https://www.mediafire.com/...">
+        </div>
+
+        <div class="form-group">
+          <label>APK Link</label>
+          <input type="url" id="f_apk_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>OBB Link</label>
+          <input type="url" id="f_obb_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>DATA Link</label>
+          <input type="url" id="f_data_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>ISO Link</label>
+          <input type="url" id="f_iso_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>CSO Link</label>
+          <input type="url" id="f_cso_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Texture Link</label>
+          <input type="url" id="f_texture_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Save Link</label>
+          <input type="url" id="f_save_link" placeholder="Opcional">
+        </div>
+        <div class="form-group">
+          <label>Link TikTok</label>
+          <input type="url" id="f_tiktok_link" placeholder="https://www.tiktok.com/...">
+        </div>
+
+        <!-- ===== DESCRIÇÕES ===== -->
+        <div class="form-section-title">📝 Descrições</div>
+
+        <div class="form-group full">
+          <label>Descrição Curta</label>
+          <textarea id="f_descricao_curta" rows="2"
+            placeholder="Resumo em uma linha (ex: Jogo de luta com gráficos realistas)"></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Descrição Longa (aceita várias linhas e links)</label>
+          <textarea id="f_descricao_longa" class="longa"
+            placeholder="Sinopse completa do jogo…&#10;&#10;Podes colar links e eles aparecem clicáveis.&#10;Ex: https://exemplo.com"></textarea>
+          <div class="preview-desc" id="previewDesc"></div>
+        </div>
+
+        <!-- ===== CONFIGURAÇÕES ===== -->
+        <div class="form-section-title">⚙️ Configurações</div>
+
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="f_tipo" onchange="togglePreco()">
+            <option value="gratis">Grátis</option>
+            <option value="pago">Pago</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="grupoPreco" style="display:none;">
+          <label>Preço</label>
+          <input type="text" id="f_preco" placeholder="Ex: 25 MT">
+        </div>
+
+        <div class="checkboxes">
+          <label><input type="checkbox" id="f_destaque"> ⭐ Em Destaque</label>
+          <label><input type="checkbox" id="f_banner"> 🎞️ Banner</label>
+          <label><input type="checkbox" id="f_partilha_ativa" onchange="togglePartilhas()"> 🔒 Exigir Partilha</label>
+        </div>
+
+        <div class="form-group" id="grupoPartilhas" style="display:none;">
+          <label>Nº de Partilhas Necessárias</label>
+          <input type="number" id="f_partilhas_necessarias" min="1" value="5">
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="fecharFormulario()">Cancelar</button>
+        <button type="submit" class="btn primary" id="btnGuardar">💾 Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-    const API_URL = 'https://zona-backend-v3h1.onrender.com';
+/* =========================================================
+   CONFIG
+========================================================= */
+const API = 'https://zona-backend-v3h1.onrender.com';
 
-    if (localStorage.getItem('adminLogado') !== 'true') {
-        window.location.href = 'index.html';
+/* =========================================================
+   PROTEÇÃO ADMIN
+========================================================= */
+if (localStorage.getItem('adminLogado') !== 'true') {
+  window.location.replace('index.html');
+}
+
+/* =========================================================
+   TEMA
+========================================================= */
+document.documentElement.setAttribute(
+  'data-theme',
+  localStorage.getItem('theme') || 'dark'
+);
+
+/* =========================================================
+   ESTADO
+========================================================= */
+let jogos = [];
+let filtroTexto = '';
+let filtroPlataforma = '';
+let filtroTipo = '';
+let editandoId = null;
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function toast(msg, tipo = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${tipo}`;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* Converte URLs em links clicáveis */
+function linkify(texto) {
+  if (!texto) return '';
+  const escapado = texto
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return escapado.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" rel="noopener">$1</a>'
+  );
+}
+
+/* =========================================================
+   API
+========================================================= */
+async function carregarJogos() {
+  try {
+    const res = await fetch(`${API}/api/jogos`);
+    if (!res.ok) throw new Error('Falha API');
+    const data = await res.json();
+    jogos = Array.isArray(data) ? data : (data.jogos || []);
+    if (jogos.length === 0) {
+      const gh = await fetch('https://raw.githubusercontent.com/BertoB6/Zona-backend/main/dados/jogos.json');
+      if (gh.ok) {
+        const gd = await gh.json();
+        jogos = gd.jogos || [];
+      }
     }
+  } catch (e) {
+    console.error(e);
+    jogos = [];
+    toast('Erro ao carregar jogos.', 'error');
+  }
+}
 
-    let jogosData = [];
-    let jogoEditandoId = null;
+async function salvarNoBackend(jogo, id = null) {
+  const url = id ? `${API}/api/jogos/${id}` : `${API}/api/jogos`;
+  const metodo = id ? 'PUT' : 'POST';
+  const res = await fetch(url, {
+    method: metodo,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(jogo)
+  });
+  if (!res.ok) throw new Error('Falha ao guardar');
+  return res.json();
+}
 
-    function mostrarToast(msg, erro = false) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast ativo' + (erro ? ' erro' : '');
-        setTimeout(() => t.className = 'toast', 3000);
+async function eliminarNoBackend(id) {
+  const res = await fetch(`${API}/api/jogos/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Falha ao eliminar');
+  return res.json();
+}
+
+async function atualizarNoBackend(id, dados) {
+  const res = await fetch(`${API}/api/jogos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  });
+  if (!res.ok) throw new Error('Falha ao atualizar');
+  return res.json();
+}
+
+/* =========================================================
+   RENDER GRID
+========================================================= */
+function renderGrid() {
+  const grid = document.getElementById('gridJogos');
+  const f = filtroTexto.trim().toLowerCase();
+
+  let lista = jogos.filter(j => {
+    // Texto
+    if (f) {
+      const alvo = `${j.nome || ''} ${j.categoria || ''} ${j.plataforma || ''}`.toLowerCase();
+      if (!alvo.includes(f)) return false;
     }
+    // Plataforma
+    if (filtroPlataforma && j.plataforma !== filtroPlataforma) return false;
+    // Tipo
+    if (filtroTipo === 'gratis' && j.pago) return false;
+    if (filtroTipo === 'pago' && !j.pago) return false;
+    if (filtroTipo === 'destaque' && !j.destaque) return false;
+    if (filtroTipo === 'banner' && !j.banner) return false;
+    return true;
+  });
 
-    async function carregarJogos() {
-        try {
-            const res = await fetch(API_URL + '/api/jogos');
-            const data = await res.json();
-            jogosData = data.jogos || [];
-            renderizar();
-        } catch (e) {
-            mostrarToast('Erro ao carregar jogos', true);
-        }
+  // Ordenar por id desc (mais recentes primeiro)
+  lista.sort((a, b) => (b.id || 0) - (a.id || 0));
+
+  if (lista.length === 0) {
+    grid.innerHTML = `<div class="empty">Nenhum jogo encontrado.</div>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map(j => {
+    const badges = [];
+    if (j.destaque) badges.push('<span class="badge gold">⭐ Destaque</span>');
+    if (j.banner) badges.push('<span class="badge pink">🎞️ Banner</span>');
+    if (j.partilha_ativa) badges.push(`<span class="badge green">🔒 ${j.partilhas_necessarias || 0}</span>`);
+    if (j.pago) badges.push('<span class="badge gold">💰 Pago</span>');
+
+    return `
+      <div class="jogo-card">
+        <div class="thumb">
+          ${j.imagem
+            ? `<img src="${j.imagem}" alt="${j.nome}" onerror="this.parentNode.innerHTML='<div class=\\'sem-img\\'>Sem imagem</div>'">`
+            : `<div class="sem-img">Sem imagem</div>`}
+          <div class="badges">${badges.join('')}</div>
+        </div>
+        <div class="body">
+          <div class="nome">${j.nome || 'Sem nome'}</div>
+          <div class="meta">
+            <span class="plat">${j.plataforma || '—'}</span>
+            <span>${j.categoria || '—'}</span>
+            <span>${j.tamanho || ''}</span>
+          </div>
+          <div class="stats">
+            <span>❤️ ${j.likes || 0}</span>
+            <span>👎 ${j.dislikes || 0}</span>
+            <span>#${j.id}</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button onclick="editarJogo(${j.id})" title="Editar">✏️</button>
+          <button class="star ${j.destaque ? 'active' : ''}" onclick="toggleDestaque(${j.id})"
+            title="Destacar">${j.destaque ? '⭐' : '☆'}</button>
+          <button class="del" onclick="excluirJogo(${j.id})" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* =========================================================
+   AÇÕES RÁPIDAS
+========================================================= */
+async function toggleDestaque(id) {
+  const j = jogos.find(x => x.id === id);
+  if (!j) return;
+  try {
+    await atualizarNoBackend(id, { destaque: !j.destaque });
+    j.destaque = !j.destaque;
+    renderGrid();
+    toast(j.destaque ? 'Adicionado aos destaques.' : 'Removido dos destaques.');
+  } catch (e) {
+    toast('Erro ao atualizar.', 'error');
+  }
+}
+
+async function excluirJogo(id) {
+  const j = jogos.find(x => x.id === id);
+  if (!j) return;
+  if (!confirm(`Eliminar "${j.nome}"? Esta ação não pode ser desfeita.`)) return;
+  try {
+    await eliminarNoBackend(id);
+    jogos = jogos.filter(x => x.id !== id);
+    renderGrid();
+    toast('Jogo eliminado.');
+  } catch (e) {
+    toast('Erro ao eliminar.', 'error');
+  }
+}
+
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
+function abrirFormulario(jogo = null) {
+  editandoId = jogo ? jogo.id : null;
+  document.getElementById('modalTitulo').textContent =
+    jogo ? `Editar: ${jogo.nome}` : 'Adicionar Jogo';
+  document.getElementById('btnGuardar').textContent =
+    jogo ? '💾 Atualizar' : '💾 Guardar';
+
+  // Preencher campos
+  const v = (id, val) => document.getElementById(id).value = val ?? '';
+
+  v('f_nome', jogo?.nome);
+  v('f_categoria', jogo?.categoria);
+  v('f_plataforma', jogo?.plataforma);
+  v('f_tamanho', jogo?.tamanho);
+  v('f_senha', jogo?.senha);
+  v('f_imagem', jogo?.imagem);
+  v('f_imagem2', jogo?.imagem2);
+  v('f_imagem3', jogo?.imagem3);
+  v('f_imagem4', jogo?.imagem4);
+  v('f_video_url', jogo?.video_url);
+  v('f_download', jogo?.download);
+  v('f_apk_link', jogo?.apk_link);
+  v('f_obb_link', jogo?.obb_link);
+  v('f_data_link', jogo?.data_link);
+  v('f_iso_link', jogo?.iso_link);
+  v('f_cso_link', jogo?.cso_link);
+  v('f_texture_link', jogo?.texture_link);
+  v('f_save_link', jogo?.save_link);
+  v('f_tiktok_link', jogo?.tiktok_link);
+  v('f_descricao_curta', jogo?.descricao_curta);
+  v('f_descricao_longa', jogo?.descricao_longa);
+  v('f_preco', jogo?.preco);
+  v('f_partilhas_necessarias', jogo?.partilhas_necessarias || 5);
+
+  document.getElementById('f_tipo').value = jogo?.pago ? 'pago' : 'gratis';
+  document.getElementById('f_destaque').checked = !!jogo?.destaque;
+  document.getElementById('f_banner').checked = !!jogo?.banner;
+  document.getElementById('f_partilha_ativa').checked = !!jogo?.partilha_ativa;
+
+  togglePreco();
+  togglePartilhas();
+  atualizarPreviewDesc();
+
+  document.getElementById('modalBg').classList.add('active');
+}
+
+function fecharFormulario() {
+  document.getElementById('modalBg').classList.remove('active');
+  document.getElementById('formJogo').reset();
+  editandoId = null;
+  document.getElementById('previewDesc').innerHTML = '';
+}
+
+function togglePreco() {
+  const tipo = document.getElementById('f_tipo').value;
+  document.getElementById('grupoPreco').style.display = tipo === 'pago' ? 'flex' : 'none';
+}
+
+function togglePartilhas() {
+  const ativo = document.getElementById('f_partilha_ativa').checked;
+  document.getElementById('grupoPartilhas').style.display = ativo ? 'flex' : 'none';
+}
+
+function atualizarPreviewDesc() {
+  const txt = document.getElementById('f_descricao_longa').value;
+  const prev = document.getElementById('previewDesc');
+  if (!txt.trim()) { prev.innerHTML = ''; return; }
+  prev.innerHTML = linkify(txt);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f_descricao_longa')
+    .addEventListener('input', atualizarPreviewDesc);
+});
+
+/* =========================================================
+   GUARDAR
+========================================================= */
+async function guardarJogo(ev) {
+  ev.preventDefault();
+
+  const dados = {
+    nome: document.getElementById('f_nome').value.trim(),
+    categoria: document.getElementById('f_categoria').value.trim(),
+    plataforma: document.getElementById('f_plataforma').value,
+    tamanho: document.getElementById('f_tamanho').value.trim(),
+    senha: document.getElementById('f_senha').value.trim(),
+    imagem: document.getElementById('f_imagem').value.trim(),
+    imagem2: document.getElementById('f_imagem2').value.trim(),
+    imagem3: document.getElementById('f_imagem3').value.trim(),
+    imagem4: document.getElementById('f_imagem4').value.trim(),
+    video_url: document.getElementById('f_video_url').value.trim(),
+    download: document.getElementById('f_download').value.trim(),
+    apk_link: document.getElementById('f_apk_link').value.trim(),
+    obb_link: document.getElementById('f_obb_link').value.trim(),
+    data_link: document.getElementById('f_data_link').value.trim(),
+    iso_link: document.getElementById('f_iso_link').value.trim(),
+    cso_link: document.getElementById('f_cso_link').value.trim(),
+    texture_link: document.getElementById('f_texture_link').value.trim(),
+    save_link: document.getElementById('f_save_link').value.trim(),
+    tiktok_link: document.getElementById('f_tiktok_link').value.trim(),
+    descricao_curta: document.getElementById('f_descricao_curta').value.trim(),
+    descricao_longa: document.getElementById('f_descricao_longa').value.trim(),
+    pago: document.getElementById('f_tipo').value === 'pago',
+    preco: document.getElementById('f_preco').value.trim(),
+    destaque: document.getElementById('f_destaque').checked,
+    banner: document.getElementById('f_banner').checked,
+    partilha_ativa: document.getElementById('f_partilha_ativa').checked,
+    partilhas_necessarias: parseInt(document.getElementById('f_partilhas_necessarias').value) || 0
+  };
+
+  if (!dados.nome || !dados.plataforma || !dados.download) {
+    toast('Preenche nome, plataforma e link principal.', 'error');
+    return;
+  }
+
+  try {
+    if (editandoId) {
+      await atualizarNoBackend(editandoId, dados);
+      const idx = jogos.findIndex(j => j.id === editandoId);
+      if (idx >= 0) jogos[idx] = { ...jogos[idx], ...dados };
+      toast('Jogo atualizado com sucesso.');
+    } else {
+      const novo = await salvarNoBackend(dados);
+      jogos.push(novo.jogo || novo);
+      toast('Jogo adicionado com sucesso.');
     }
+    fecharFormulario();
+    renderGrid();
+  } catch (e) {
+    console.error(e);
+    toast('Erro ao guardar. Verifica a API.', 'error');
+  }
+}
 
-    function renderizar() {
-        const lista = document.getElementById('listaJogos');
-        if (jogosData.length === 0) {
-            lista.innerHTML = '<div class="vazio">Nenhum jogo registado</div>';
-            return;
-        }
-        lista.innerHTML = '';
-        jogosData.forEach(jogo => {
-            const div = document.createElement('div');
-            div.className = 'item' + (jogo.destaque ? ' destaque' : '');
-            div.innerHTML = `
-                <div class="info">
-                    <h4>${jogo.nome}</h4>
-                    <p>${jogo.categoria} • ${jogo.plataforma} • ${jogo.pago ? '💰 ' + jogo.preco : '🎁 Grátis'}${jogo.partilha_ativa ? ' • 📤 Partilha' : ''}</p>
-                </div>
-                <div class="acoes">
-                    <button class="btn-acao btn-editar" onclick="editarJogo(${jogo.id})">✏️ Editar</button>
-                    <button class="btn-acao btn-destaque" onclick="toggleDestaque(${jogo.id})">${jogo.destaque ? '⭐ Remover' : '☆ Destacar'}</button>
-                    <button class="btn-acao btn-excluir" onclick="excluirJogo(${jogo.id})">🗑️</button>
-                </div>
-            `;
-            lista.appendChild(div);
-        });
-    }
+function editarJogo(id) {
+  const j = jogos.find(x => x.id === id);
+  if (j) abrirFormulario(j);
+}
 
-    function abrirForm(jogo = null) {
-        document.getElementById('formCard').classList.add('ativo');
-        jogoEditandoId = null;
+/* =========================================================
+   INIT
+========================================================= */
+async function init() {
+  await carregarJogos();
+  renderGrid();
 
-        if (jogo) {
-            jogoEditandoId = jogo.id;
-            document.getElementById('formTitulo').textContent = '✏️ Editar Jogo';
-            document.getElementById('jogoNome').value = jogo.nome || '';
-            document.getElementById('jogoCategoria').value = jogo.categoria || '';
-            document.getElementById('jogoPlataforma').value = jogo.plataforma || 'PSP';
-            document.getElementById('jogoImagem').value = jogo.imagem || '';
-            document.getElementById('jogoTamanho').value = jogo.tamanho || '';
-            document.getElementById('jogoPago').value = jogo.pago ? 'true' : 'false';
-            document.getElementById('jogoPreco').value = jogo.preco || '';
-            document.getElementById('jogoSenha').value = jogo.senha || '';
-            document.getElementById('jogoDownload').value = jogo.download || '';
-            document.getElementById('jogoDescricao').value = jogo.descricao_curta || '';
-            document.getElementById('jogoDescricaoLonga').value = jogo.descricao_longa || '';
-            document.getElementById('jogoDestaque').checked = jogo.destaque || false;
-            document.getElementById('jogoBanner').checked = jogo.banner || false;
-            document.getElementById('jogoPartilha').checked = jogo.partilha_ativa || false;
-            document.getElementById('jogoPartilhasNum').value = jogo.partilhas_necessarias || 5;
-        } else {
-            document.getElementById('formTitulo').textContent = '➕ Adicionar Jogo';
-            document.getElementById('jogoNome').value = '';
-            document.getElementById('jogoCategoria').value = '';
-            document.getElementById('jogoPlataforma').value = 'PSP';
-            document.getElementById('jogoImagem').value = '';
-            document.getElementById('jogoTamanho').value = '';
-            document.getElementById('jogoPago').value = 'false';
-            document.getElementById('jogoPreco').value = '';
-            document.getElementById('jogoSenha').value = '';
-            document.getElementById('jogoDownload').value = '';
-            document.getElementById('jogoDescricao').value = '';
-            document.getElementById('jogoDescricaoLonga').value = '';
-            document.getElementById('jogoDestaque').checked = false;
-            document.getElementById('jogoBanner').checked = false;
-            document.getElementById('jogoPartilha').checked = false;
-            document.getElementById('jogoPartilhasNum').value = 5;
-        }
-        document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
-    }
+  document.getElementById('searchInput')
+    .addEventListener('input', (e) => {
+      filtroTexto = e.target.value;
+      renderGrid();
+    });
 
-    function fecharForm() {
-        document.getElementById('formCard').classList.remove('ativo');
-        jogoEditandoId = null;
-    }
+  document.getElementById('filtroPlataforma')
+    .addEventListener('change', (e) => {
+      filtroPlataforma = e.target.value;
+      renderGrid();
+    });
 
-    async function salvarJogo() {
-        const jogo = {
-            nome: document.getElementById('jogoNome').value.trim(),
-            categoria: document.getElementById('jogoCategoria').value.trim(),
-            plataforma: document.getElementById('jogoPlataforma').value,
-            imagem: document.getElementById('jogoImagem').value.trim(),
-            tamanho: document.getElementById('jogoTamanho').value.trim(),
-            pago: document.getElementById('jogoPago').value === 'true',
-            preco: document.getElementById('jogoPreco').value.trim(),
-            senha: document.getElementById('jogoSenha').value.trim(),
-            download: document.getElementById('jogoDownload').value.trim(),
-            descricao_curta: document.getElementById('jogoDescricao').value.trim(),
-            descricao_longa: document.getElementById('jogoDescricaoLonga').value.trim(),
-            destaque: document.getElementById('jogoDestaque').checked,
-            banner: document.getElementById('jogoBanner').checked,
-            partilha_ativa: document.getElementById('jogoPartilha').checked,
-            partilhas_necessarias: parseInt(document.getElementById('jogoPartilhasNum').value) || 0,
-            likes: 0,
-            dislikes: 0
-        };
+  document.getElementById('filtroTipo')
+    .addEventListener('change', (e) => {
+      filtroTipo = e.target.value;
+      renderGrid();
+    });
+}
 
-        if (!jogo.nome || !jogo.categoria) {
-            mostrarToast('Preencha nome e categoria!', true);
-            return;
-        }
-
-        try {
-            const url = jogoEditandoId ? `${API_URL}/api/jogos/${jogoEditandoId}` : `${API_URL}/api/jogos`;
-            const method = jogoEditandoId ? 'PUT' : 'POST';
-
-            if (jogoEditandoId) {
-                const existente = jogosData.find(j => j.id === jogoEditandoId);
-                if (existente) {
-                    jogo.likes = existente.likes || 0;
-                    jogo.dislikes = existente.dislikes || 0;
-                }
-            }
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(jogo)
-            });
-
-            if (res.ok) {
-                mostrarToast(jogoEditandoId ? '✅ Jogo atualizado!' : '✅ Jogo adicionado!');
-                fecharForm();
-                await carregarJogos();
-            } else {
-                mostrarToast('Erro ao guardar', true);
-            }
-        } catch (e) {
-            mostrarToast('Erro de conexão', true);
-        }
-    }
-
-    function editarJogo(id) {
-        const jogo = jogosData.find(j => j.id === id);
-        if (jogo) abrirForm(jogo);
-    }
-
-    async function toggleDestaque(id) {
-        const jogo = jogosData.find(j => j.id === id);
-        if (!jogo) return;
-        try {
-            await fetch(`${API_URL}/api/jogos/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...jogo, destaque: !jogo.destaque })
-            });
-            await carregarJogos();
-            mostrarToast(jogo.destaque ? 'Removido do destaque' : 'Adicionado ao destaque');
-        } catch (e) {
-            mostrarToast('Erro', true);
-        }
-    }
-
-    async function excluirJogo(id) {
-        if (!confirm('Excluir este jogo?')) return;
-        try {
-            await fetch(`${API_URL}/api/jogos/${id}`, { method: 'DELETE' });
-            await carregarJogos();
-            mostrarToast('Jogo excluído');
-        } catch (e) {
-            mostrarToast('Erro', true);
-        }
-    }
-
-    carregarJogos();
+init();
 </script>
-
 </body>
 </html>
