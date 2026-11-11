@@ -36,7 +36,7 @@
     min-height: 100vh;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; }
+  .container { max-width: 1280px; margin: 0 auto; }
 
   .header {
     background: var(--card);
@@ -72,11 +72,7 @@
     gap: 6px;
   }
   .btn:hover { border-color: var(--accent); color: var(--accent); }
-  .btn.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn.primary:hover { opacity: 0.9; color: #fff; }
   .btn.danger { color: var(--red); border-color: var(--red); }
   .btn.danger:hover { background: var(--red); color: #fff; }
@@ -88,13 +84,8 @@
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
-  .toolbar .search-wrap {
-    flex: 1;
-    min-width: 220px;
-    position: relative;
-  }
-  .toolbar input[type="text"],
-  .toolbar select {
+  .toolbar .search-wrap { flex: 1; min-width: 220px; position: relative; }
+  .toolbar input[type="text"], .toolbar select {
     width: 100%;
     padding: 11px 16px 11px 42px;
     border-radius: 30px;
@@ -105,14 +96,8 @@
     outline: none;
     transition: 0.2s;
   }
-  .toolbar select {
-    padding-left: 16px;
-    min-width: 160px;
-    flex: 0 0 auto;
-    cursor: pointer;
-  }
-  .toolbar input:focus,
-  .toolbar select:focus { border-color: var(--accent); }
+  .toolbar select { padding-left: 16px; min-width: 160px; flex: 0 0 auto; cursor: pointer; }
+  .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
   .search-wrap::before {
     content: "🔍";
     position: absolute;
@@ -124,27 +109,33 @@
     pointer-events: none;
   }
 
-  /* Grid 3 cards */
+  /* ==========================================
+     GRID — SEMPRE 3 COLUNAS
+     ========================================== */
   .grid-jogos {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
   }
-  @media (max-width: 900px) {
-    .grid-jogos { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 600px) {
-    .grid-jogos { grid-template-columns: 1fr; }
+
+  /* Mobile pequeno — mantém 3 mas aperta margens */
+  @media (max-width: 420px) {
+    .grid-jogos { gap: 8px; }
+    .jogo-card .body { padding: 8px; }
+    .jogo-card .nome { font-size: 0.78rem; }
+    .jogo-card .meta, .jogo-card .stats { font-size: 0.62rem; }
+    .jogo-card .actions button { font-size: 0.7rem; padding: 5px 2px; }
   }
 
   .jogo-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: 0.2s;
+    min-width: 0; /* impede overflow do grid */
   }
   .jogo-card:hover { border-color: var(--accent); }
 
@@ -155,93 +146,66 @@
     overflow: hidden;
     position: relative;
   }
-  .jogo-card .thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .jogo-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .jogo-card .thumb .sem-img {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    font-size: 0.8rem;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 0.7rem;
   }
 
   .jogo-card .badges {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    position: absolute; top: 6px; left: 6px;
+    display: flex; gap: 4px; flex-wrap: wrap;
   }
   .jogo-card .badge {
-    font-size: 0.68rem;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
+    font-size: 0.58rem; padding: 2px 6px; border-radius: 20px;
+    background: rgba(0,0,0,0.75); color: #fff; font-weight: 600;
   }
   .badge.gold { background: var(--gold); color: #000; }
   .badge.pink { background: var(--accent); }
   .badge.green { background: var(--green); }
 
   .jogo-card .body {
-    padding: 12px 14px;
+    padding: 10px 12px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
+    min-width: 0;
   }
   .jogo-card .nome {
-    font-weight: 700;
-    font-size: 0.95rem;
-    line-height: 1.25;
+    font-weight: 700; font-size: 0.85rem; line-height: 1.25;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    min-height: 2.2em;
+    word-break: break-word;
   }
   .jogo-card .meta {
-    font-size: 0.75rem;
-    color: var(--muted);
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    font-size: 0.66rem; color: var(--muted);
+    display: flex; gap: 6px; flex-wrap: wrap;
   }
-  .jogo-card .meta .plat {
-    color: var(--accent);
-    font-weight: 700;
-  }
+  .jogo-card .meta .plat { color: var(--accent); font-weight: 700; }
   .jogo-card .stats {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: auto;
-    display: flex;
-    gap: 10px;
+    font-size: 0.66rem; color: var(--muted); margin-top: auto;
+    display: flex; gap: 8px; padding-top: 4px;
   }
 
   .jogo-card .actions {
-    display: flex;
-    gap: 6px;
-    padding: 10px 12px;
+    display: flex; gap: 4px;
+    padding: 8px;
     border-top: 1px solid var(--border);
     background: var(--bg);
   }
   .jogo-card .actions button {
     flex: 1;
-    padding: 7px 4px;
-    border-radius: 10px;
+    padding: 6px 2px;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--text);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: 0.2s;
   }
@@ -249,11 +213,10 @@
   .jogo-card .actions button.del:hover { border-color: var(--red); color: var(--red); }
   .jogo-card .actions button.star.active { color: var(--gold); border-color: var(--gold); }
 
-  /* MODAL / FORMULÁRIO */
+  /* ============ MODAL EM FASES ============ */
   .modal-bg {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
     backdrop-filter: blur(4px);
     display: none;
     align-items: flex-start;
@@ -269,44 +232,108 @@
     border: 1px solid var(--border);
     border-radius: 20px;
     width: 100%;
-    max-width: 780px;
+    max-width: 720px;
     padding: 24px;
     margin: auto;
   }
   .modal h2 {
     color: var(--accent);
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+    font-size: 1.15rem;
+    margin-bottom: 18px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal h2 .close {
+    background: none; border: none; color: var(--muted);
+    font-size: 1.4rem; cursor: pointer;
+  }
+  .modal h2 .close:hover { color: var(--red); }
+
+  /* Stepper clicável */
+  .stepper {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 22px;
+    position: relative;
+    padding: 0 8px;
   }
-  .modal h2 .close {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 1.4rem;
+  .stepper::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    left: 40px;
+    right: 40px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px;
+    z-index: 1;
+    position: relative;
+    flex: 1;
     cursor: pointer;
+    user-select: none;
   }
-  .modal h2 .close:hover { color: var(--red); }
+  .step .circle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+    color: var(--muted);
+    transition: 0.25s;
+  }
+  .step:hover .circle { border-color: var(--accent); }
+  .step.active .circle {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 0, 79, 0.2);
+  }
+  .step.done .circle {
+    border-color: var(--green);
+    background: var(--green);
+    color: #fff;
+  }
+  .step .label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+  }
+  .step.active .label { color: var(--accent); }
+  .step.done .label { color: var(--green); }
+
+  /* Fases */
+  .fase { display: none; }
+  .fase.active { display: block; animation: fadeIn 0.25s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
 
   .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
   }
-  @media (max-width: 600px) {
-    .form-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
 
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1 / -1; }
   .form-group label {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
+  }
+  .form-group label .opt {
+    color: var(--muted);
+    font-weight: 400;
+    text-transform: none;
+    font-size: 0.7rem;
+    opacity: 0.7;
   }
   .form-group input,
   .form-group select,
@@ -325,14 +352,9 @@
   .form-group input:focus,
   .form-group select:focus,
   .form-group textarea:focus { border-color: var(--accent); }
-
-  .form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.5;
-  }
+  .form-group textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
   .form-group textarea.longa {
-    min-height: 200px;
+    min-height: 220px;
     white-space: pre-wrap;
     font-family: 'SFMono-Regular', Consolas, monospace;
     font-size: 0.85rem;
@@ -340,50 +362,80 @@
 
   .form-section-title {
     grid-column: 1 / -1;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--accent);
-    margin-top: 8px;
+    margin-top: 6px;
     padding-bottom: 6px;
     border-bottom: 1px solid var(--border);
   }
 
   .checkboxes {
     grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
+    display: flex; flex-wrap: wrap; gap: 16px;
     padding: 8px 0;
   }
   .checkboxes label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     font-size: 0.88rem;
-    text-transform: none;
-    letter-spacing: 0;
-    cursor: pointer;
+    text-transform: none; letter-spacing: 0; cursor: pointer;
   }
   .checkboxes input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     accent-color: var(--accent);
     cursor: pointer;
   }
 
   .modal-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
+    display: flex; gap: 10px; justify-content: space-between;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
     flex-wrap: wrap;
+    align-items: center;
   }
+  .modal-actions .right { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+
+  .hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* Preview imagem */
+  .img-preview {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+  .preview-desc {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+  .preview-desc a { color: var(--blue); text-decoration: underline; }
+  .preview-desc:empty { display: none; }
 
   /* Toast */
   .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    position: fixed; bottom: 20px; right: 20px;
     background: var(--card);
     border: 1px solid var(--border);
     border-left: 4px solid var(--accent);
@@ -401,38 +453,13 @@
   .toast.success { border-left-color: var(--green); }
   .toast.error { border-left-color: var(--red); }
 
-  .empty {
+  .empty, .loading {
     grid-column: 1 / -1;
     text-align: center;
     color: var(--muted);
     padding: 40px 20px;
     font-size: 0.95rem;
   }
-
-  .loading {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: var(--muted);
-    padding: 40px 20px;
-    font-size: 0.95rem;
-  }
-
-  /* Pré-visualização da descrição longa */
-  .preview-desc {
-    background: var(--bg);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 0.85rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 220px;
-    overflow-y: auto;
-    line-height: 1.5;
-    margin-top: 6px;
-  }
-  .preview-desc a { color: var(--blue); text-decoration: underline; }
-  .preview-desc:empty { display: none; }
 </style>
 </head>
 <body>
@@ -446,7 +473,6 @@
     </div>
   </div>
 
-  <!-- Toolbar -->
   <div class="toolbar">
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="Pesquisar por nome, categoria ou plataforma…">
@@ -467,14 +493,13 @@
     </select>
   </div>
 
-  <!-- Grid -->
   <div class="grid-jogos" id="gridJogos">
     <div class="loading">A carregar jogos…</div>
   </div>
 
 </div>
 
-<!-- ==================== MODAL FORMULÁRIO ==================== -->
+<!-- ==================== MODAL EM FASES ==================== -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h2>
@@ -482,159 +507,203 @@
       <button class="close" onclick="fecharFormulario()">✕</button>
     </h2>
 
+    <!-- Stepper CLICÁVEL -->
+    <div class="stepper">
+      <div class="step active" data-step="1" onclick="irParaFase(1)">
+        <div class="circle">1</div>
+        <div class="label">Informações</div>
+      </div>
+      <div class="step" data-step="2" onclick="irParaFase(2)">
+        <div class="circle">2</div>
+        <div class="label">Imagens</div>
+      </div>
+      <div class="step" data-step="3" onclick="irParaFase(3)">
+        <div class="circle">3</div>
+        <div class="label">Links</div>
+      </div>
+    </div>
+
     <form id="formJogo" onsubmit="guardarJogo(event)">
-      <div class="form-grid">
 
-        <div class="form-section-title">📋 Informações Básicas</div>
+      <!-- ============ FASE 1: INFORMAÇÕES ============ -->
+      <div class="fase active" data-fase="1">
+        <div class="form-grid">
 
-        <div class="form-group full">
-          <label>Nome do Jogo *</label>
-          <input type="text" id="f_nome" required placeholder="Ex: Mortal Kombat 11">
-        </div>
+          <div class="form-group full">
+            <label>Nome do Jogo <span class="opt">(opcional)</span></label>
+            <input type="text" id="f_nome" placeholder="Ex: Mortal Kombat 11">
+          </div>
 
-        <div class="form-group">
-          <label>Categoria</label>
-          <input type="text" id="f_categoria" placeholder="Ex: Luta, Futebol, Ação">
-        </div>
+          <div class="form-group">
+            <label>Categoria <span class="opt">(opcional)</span></label>
+            <input type="text" id="f_categoria" placeholder="Ex: Luta, Futebol">
+          </div>
 
-        <div class="form-group">
-          <label>Plataforma *</label>
-          <select id="f_plataforma" required>
-            <option value="">— Escolher —</option>
-            <option value="PSP">PSP</option>
-            <option value="PS2">PS2</option>
-            <option value="PC">PC</option>
-            <option value="APK Android">APK Android</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label>Plataforma <span class="opt">(opcional)</span></label>
+            <select id="f_plataforma">
+              <option value="">— Escolher —</option>
+              <option value="PSP">PSP</option>
+              <option value="PS2">PS2</option>
+              <option value="PC">PC</option>
+              <option value="APK Android">APK Android</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label>Tamanho</label>
-          <input type="text" id="f_tamanho" placeholder="Ex: 1.4 GB">
-        </div>
+          <div class="form-group">
+            <label>Tamanho <span class="opt">(opcional)</span></label>
+            <input type="text" id="f_tamanho" placeholder="Ex: 1.4 GB">
+          </div>
 
-        <div class="form-group">
-          <label>Senha (se houver)</label>
-          <input type="text" id="f_senha" placeholder="Opcional">
-        </div>
+          <div class="form-group">
+            <label>Senha <span class="opt">(opcional)</span></label>
+            <input type="text" id="f_senha" placeholder="Opcional">
+          </div>
 
-        <div class="form-group full">
-          <label>URL da Imagem Principal</label>
-          <input type="url" id="f_imagem" placeholder="https://res.cloudinary.com/...">
-        </div>
+          <div class="form-group full">
+            <label>Descrição Curta <span class="opt">(opcional)</span></label>
+            <textarea id="f_descricao_curta" rows="2"
+              placeholder="Resumo em uma linha…"></textarea>
+          </div>
 
-        <div class="form-group">
-          <label>Imagem 2</label>
-          <input type="url" id="f_imagem2" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Imagem 3</label>
-          <input type="url" id="f_imagem3" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Imagem 4</label>
-          <input type="url" id="f_imagem4" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Vídeo (YouTube/TikTok)</label>
-          <input type="url" id="f_video_url" placeholder="https://youtube.com/...">
-        </div>
+          <div class="form-group full">
+            <label>Descrição Longa <span class="opt">(opcional — aceita várias linhas e links)</span></label>
+            <textarea id="f_descricao_longa" class="longa"
+              placeholder="Sinopse completa do jogo…&#10;&#10;Cola links e eles aparecem clicáveis."></textarea>
+            <div class="preview-desc" id="previewDesc"></div>
+          </div>
 
-        <!-- ===== LINKS DE DOWNLOAD ===== -->
-        <div class="form-section-title">🔗 Links de Download</div>
-
-        <div class="form-group full">
-          <label>Link Principal *</label>
-          <input type="url" id="f_download" placeholder="https://www.mediafire.com/...">
         </div>
-
-        <div class="form-group">
-          <label>APK Link</label>
-          <input type="url" id="f_apk_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>OBB Link</label>
-          <input type="url" id="f_obb_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>DATA Link</label>
-          <input type="url" id="f_data_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>ISO Link</label>
-          <input type="url" id="f_iso_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>CSO Link</label>
-          <input type="url" id="f_cso_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Texture Link</label>
-          <input type="url" id="f_texture_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Save Link</label>
-          <input type="url" id="f_save_link" placeholder="Opcional">
-        </div>
-        <div class="form-group">
-          <label>Link TikTok</label>
-          <input type="url" id="f_tiktok_link" placeholder="https://www.tiktok.com/...">
-        </div>
-
-        <!-- ===== DESCRIÇÕES ===== -->
-        <div class="form-section-title">📝 Descrições</div>
-
-        <div class="form-group full">
-          <label>Descrição Curta</label>
-          <textarea id="f_descricao_curta" rows="2"
-            placeholder="Resumo em uma linha (ex: Jogo de luta com gráficos realistas)"></textarea>
-        </div>
-
-        <div class="form-group full">
-          <label>Descrição Longa (aceita várias linhas e links)</label>
-          <textarea id="f_descricao_longa" class="longa"
-            placeholder="Sinopse completa do jogo…&#10;&#10;Podes colar links e eles aparecem clicáveis.&#10;Ex: https://exemplo.com"></textarea>
-          <div class="preview-desc" id="previewDesc"></div>
-        </div>
-
-        <!-- ===== CONFIGURAÇÕES ===== -->
-        <div class="form-section-title">⚙️ Configurações</div>
-
-        <div class="form-group">
-          <label>Tipo</label>
-          <select id="f_tipo" onchange="togglePreco()">
-            <option value="gratis">Grátis</option>
-            <option value="pago">Pago</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="grupoPreco" style="display:none;">
-          <label>Preço</label>
-          <input type="text" id="f_preco" placeholder="Ex: 25 MT">
-        </div>
-
-        <div class="checkboxes">
-          <label><input type="checkbox" id="f_destaque"> ⭐ Em Destaque</label>
-          <label><input type="checkbox" id="f_banner"> 🎞️ Banner</label>
-          <label><input type="checkbox" id="f_partilha_ativa" onchange="togglePartilhas()"> 🔒 Exigir Partilha</label>
-        </div>
-
-        <div class="form-group" id="grupoPartilhas" style="display:none;">
-          <label>Nº de Partilhas Necessárias</label>
-          <input type="number" id="f_partilhas_necessarias" min="1" value="5">
-        </div>
-
       </div>
 
+      <!-- ============ FASE 2: IMAGENS ============ -->
+      <div class="fase" data-fase="2">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label>Imagem Principal <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_imagem" placeholder="https://res.cloudinary.com/...">
+            <div class="img-preview" id="previewImg1">Sem imagem</div>
+          </div>
+
+          <div class="form-group">
+            <label>Imagem 2 <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_imagem2" placeholder="Opcional">
+          </div>
+
+          <div class="form-group">
+            <label>Imagem 3 <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_imagem3" placeholder="Opcional">
+          </div>
+
+          <div class="form-group">
+            <label>Imagem 4 <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_imagem4" placeholder="Opcional">
+          </div>
+
+          <div class="form-group">
+            <label>Vídeo (YouTube/TikTok) <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_video_url" placeholder="https://youtube.com/...">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============ FASE 3: LINKS ============ -->
+      <div class="fase" data-fase="3">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label>Link Principal <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_download" placeholder="https://www.mediafire.com/...">
+          </div>
+
+          <div class="form-group">
+            <label>APK Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_apk_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>OBB Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_obb_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>DATA Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_data_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>ISO Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_iso_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>CSO Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_cso_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>Texture Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_texture_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>Save Link <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_save_link" placeholder="Opcional">
+          </div>
+          <div class="form-group">
+            <label>Link TikTok <span class="opt">(opcional)</span></label>
+            <input type="url" id="f_tiktok_link" placeholder="https://www.tiktok.com/...">
+          </div>
+
+          <div class="form-section-title">⚙️ Configurações</div>
+
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="f_tipo" onchange="togglePreco()">
+              <option value="gratis">Grátis</option>
+              <option value="pago">Pago</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="grupoPreco" style="display:none;">
+            <label>Preço <span class="opt">(opcional)</span></label>
+            <input type="text" id="f_preco" placeholder="Ex: 25 MT">
+          </div>
+
+          <div class="checkboxes">
+            <label><input type="checkbox" id="f_destaque"> ⭐ Em Destaque</label>
+            <label><input type="checkbox" id="f_banner"> 🎞️ Banner</label>
+            <label><input type="checkbox" id="f_partilha_ativa" onchange="togglePartilhas()"> 🔒 Exigir Partilha</label>
+          </div>
+
+          <div class="form-group" id="grupoPartilhas" style="display:none;">
+            <label>Nº de Partilhas Necessárias</label>
+            <input type="number" id="f_partilhas_necessarias" min="0" value="5">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============ AÇÕES ============ -->
       <div class="modal-actions">
-        <button type="button" class="btn" onclick="fecharFormulario()">Cancelar</button>
-        <button type="submit" class="btn primary" id="btnGuardar">💾 Guardar</button>
+        <button type="button" class="btn" id="btnAnterior" onclick="faseAnterior()" style="display:none;">
+          ← Anterior
+        </button>
+        <div class="right">
+          <button type="button" class="btn" onclick="fecharFormulario()">Cancelar</button>
+          <button type="button" class="btn primary" id="btnSeguinte" onclick="proximaFase()">
+            Seguinte →
+          </button>
+          <button type="submit" class="btn primary" id="btnPublicar" style="display:none;">
+            🚀 Publicar
+          </button>
+        </div>
       </div>
+
+      <div class="hint" style="text-align:center; margin-top:10px;">
+        Nenhum campo é obrigatório — podes publicar quando quiseres.
+      </div>
+
     </form>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -666,6 +735,8 @@ let filtroTexto = '';
 let filtroPlataforma = '';
 let filtroTipo = '';
 let editandoId = null;
+let faseAtual = 1;
+const TOTAL_FASES = 3;
 
 /* =========================================================
    HELPERS
@@ -678,7 +749,6 @@ function toast(msg, tipo = 'success') {
   t._timer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-/* Converte URLs em links clicáveis */
 function linkify(texto) {
   if (!texto) return '';
   const escapado = texto
@@ -702,10 +772,7 @@ async function carregarJogos() {
     jogos = Array.isArray(data) ? data : (data.jogos || []);
     if (jogos.length === 0) {
       const gh = await fetch('https://raw.githubusercontent.com/BertoB6/Zona-backend/main/dados/jogos.json');
-      if (gh.ok) {
-        const gd = await gh.json();
-        jogos = gd.jogos || [];
-      }
+      if (gh.ok) { const gd = await gh.json(); jogos = gd.jogos || []; }
     }
   } catch (e) {
     console.error(e);
@@ -743,21 +810,18 @@ async function atualizarNoBackend(id, dados) {
 }
 
 /* =========================================================
-   RENDER GRID
+   RENDER GRID — 3 COLUNAS
 ========================================================= */
 function renderGrid() {
   const grid = document.getElementById('gridJogos');
   const f = filtroTexto.trim().toLowerCase();
 
   let lista = jogos.filter(j => {
-    // Texto
     if (f) {
       const alvo = `${j.nome || ''} ${j.categoria || ''} ${j.plataforma || ''}`.toLowerCase();
       if (!alvo.includes(f)) return false;
     }
-    // Plataforma
     if (filtroPlataforma && j.plataforma !== filtroPlataforma) return false;
-    // Tipo
     if (filtroTipo === 'gratis' && j.pago) return false;
     if (filtroTipo === 'pago' && !j.pago) return false;
     if (filtroTipo === 'destaque' && !j.destaque) return false;
@@ -765,7 +829,6 @@ function renderGrid() {
     return true;
   });
 
-  // Ordenar por id desc (mais recentes primeiro)
   lista.sort((a, b) => (b.id || 0) - (a.id || 0));
 
   if (lista.length === 0) {
@@ -775,16 +838,16 @@ function renderGrid() {
 
   grid.innerHTML = lista.map(j => {
     const badges = [];
-    if (j.destaque) badges.push('<span class="badge gold">⭐ Destaque</span>');
-    if (j.banner) badges.push('<span class="badge pink">🎞️ Banner</span>');
-    if (j.partilha_ativa) badges.push(`<span class="badge green">🔒 ${j.partilhas_necessarias || 0}</span>`);
-    if (j.pago) badges.push('<span class="badge gold">💰 Pago</span>');
+    if (j.destaque) badges.push('<span class="badge gold">⭐</span>');
+    if (j.banner) badges.push('<span class="badge pink">🎞️</span>');
+    if (j.partilha_ativa) badges.push(`<span class="badge green">🔒${j.partilhas_necessarias || 0}</span>`);
+    if (j.pago) badges.push('<span class="badge gold">💰</span>');
 
     return `
       <div class="jogo-card">
         <div class="thumb">
           ${j.imagem
-            ? `<img src="${j.imagem}" alt="${j.nome}" onerror="this.parentNode.innerHTML='<div class=\\'sem-img\\'>Sem imagem</div>'">`
+            ? `<img src="${j.imagem}" alt="${j.nome || ''}" onerror="this.parentNode.innerHTML='<div class=\\'sem-img\\'>Sem imagem</div>'">`
             : `<div class="sem-img">Sem imagem</div>`}
           <div class="badges">${badges.join('')}</div>
         </div>
@@ -793,12 +856,10 @@ function renderGrid() {
           <div class="meta">
             <span class="plat">${j.plataforma || '—'}</span>
             <span>${j.categoria || '—'}</span>
-            <span>${j.tamanho || ''}</span>
           </div>
           <div class="stats">
             <span>❤️ ${j.likes || 0}</span>
             <span>👎 ${j.dislikes || 0}</span>
-            <span>#${j.id}</span>
           </div>
         </div>
         <div class="actions">
@@ -823,36 +884,29 @@ async function toggleDestaque(id) {
     j.destaque = !j.destaque;
     renderGrid();
     toast(j.destaque ? 'Adicionado aos destaques.' : 'Removido dos destaques.');
-  } catch (e) {
-    toast('Erro ao atualizar.', 'error');
-  }
+  } catch (e) { toast('Erro ao atualizar.', 'error'); }
 }
 
 async function excluirJogo(id) {
   const j = jogos.find(x => x.id === id);
   if (!j) return;
-  if (!confirm(`Eliminar "${j.nome}"? Esta ação não pode ser desfeita.`)) return;
+  if (!confirm(`Eliminar "${j.nome || 'este jogo'}"?`)) return;
   try {
     await eliminarNoBackend(id);
     jogos = jogos.filter(x => x.id !== id);
     renderGrid();
     toast('Jogo eliminado.');
-  } catch (e) {
-    toast('Erro ao eliminar.', 'error');
-  }
+  } catch (e) { toast('Erro ao eliminar.', 'error'); }
 }
 
 /* =========================================================
-   FORMULÁRIO
+   FORMULÁRIO EM FASES
 ========================================================= */
 function abrirFormulario(jogo = null) {
   editandoId = jogo ? jogo.id : null;
   document.getElementById('modalTitulo').textContent =
-    jogo ? `Editar: ${jogo.nome}` : 'Adicionar Jogo';
-  document.getElementById('btnGuardar').textContent =
-    jogo ? '💾 Atualizar' : '💾 Guardar';
+    jogo ? `Editar: ${jogo.nome || 'sem nome'}` : 'Adicionar Jogo';
 
-  // Preencher campos
   const v = (id, val) => document.getElementById(id).value = val ?? '';
 
   v('f_nome', jogo?.nome);
@@ -860,6 +914,8 @@ function abrirFormulario(jogo = null) {
   v('f_plataforma', jogo?.plataforma);
   v('f_tamanho', jogo?.tamanho);
   v('f_senha', jogo?.senha);
+  v('f_descricao_curta', jogo?.descricao_curta);
+  v('f_descricao_longa', jogo?.descricao_longa);
   v('f_imagem', jogo?.imagem);
   v('f_imagem2', jogo?.imagem2);
   v('f_imagem3', jogo?.imagem3);
@@ -874,10 +930,8 @@ function abrirFormulario(jogo = null) {
   v('f_texture_link', jogo?.texture_link);
   v('f_save_link', jogo?.save_link);
   v('f_tiktok_link', jogo?.tiktok_link);
-  v('f_descricao_curta', jogo?.descricao_curta);
-  v('f_descricao_longa', jogo?.descricao_longa);
   v('f_preco', jogo?.preco);
-  v('f_partilhas_necessarias', jogo?.partilhas_necessarias || 5);
+  v('f_partilhas_necessarias', jogo?.partilhas_necessarias ?? 5);
 
   document.getElementById('f_tipo').value = jogo?.pago ? 'pago' : 'gratis';
   document.getElementById('f_destaque').checked = !!jogo?.destaque;
@@ -887,7 +941,9 @@ function abrirFormulario(jogo = null) {
   togglePreco();
   togglePartilhas();
   atualizarPreviewDesc();
+  atualizarPreviewImg1();
 
+  irParaFase(1);
   document.getElementById('modalBg').classList.add('active');
 }
 
@@ -896,6 +952,34 @@ function fecharFormulario() {
   document.getElementById('formJogo').reset();
   editandoId = null;
   document.getElementById('previewDesc').innerHTML = '';
+  document.getElementById('previewImg1').innerHTML = 'Sem imagem';
+  irParaFase(1);
+}
+
+/* ---------- NAVEGAÇÃO DE FASES (livre) ---------- */
+function irParaFase(n) {
+  if (n < 1 || n > TOTAL_FASES) return;
+  faseAtual = n;
+  document.querySelectorAll('.fase').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.fase) === n);
+  });
+  document.querySelectorAll('.step').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.toggle('active', s === n);
+    el.classList.toggle('done', s < n);
+  });
+
+  document.getElementById('btnAnterior').style.display = n > 1 ? 'inline-flex' : 'none';
+  document.getElementById('btnSeguinte').style.display = n < TOTAL_FASES ? 'inline-flex' : 'none';
+  document.getElementById('btnPublicar').style.display = n === TOTAL_FASES ? 'inline-flex' : 'none';
+}
+
+function proximaFase() {
+  if (faseAtual < TOTAL_FASES) irParaFase(faseAtual + 1);
+}
+
+function faseAnterior() {
+  if (faseAtual > 1) irParaFase(faseAtual - 1);
 }
 
 function togglePreco() {
@@ -911,17 +995,26 @@ function togglePartilhas() {
 function atualizarPreviewDesc() {
   const txt = document.getElementById('f_descricao_longa').value;
   const prev = document.getElementById('previewDesc');
-  if (!txt.trim()) { prev.innerHTML = ''; return; }
-  prev.innerHTML = linkify(txt);
+  prev.innerHTML = txt.trim() ? linkify(txt) : '';
+}
+
+function atualizarPreviewImg1() {
+  const url = document.getElementById('f_imagem').value.trim();
+  const box = document.getElementById('previewImg1');
+  box.innerHTML = url
+    ? `<img src="${url}" onerror="this.parentNode.innerHTML='Imagem inválida'">`
+    : 'Sem imagem';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f_descricao_longa')
     .addEventListener('input', atualizarPreviewDesc);
+  document.getElementById('f_imagem')
+    .addEventListener('input', atualizarPreviewImg1);
 });
 
 /* =========================================================
-   GUARDAR
+   GUARDAR — sem validação bloqueante
 ========================================================= */
 async function guardarJogo(ev) {
   ev.preventDefault();
@@ -932,6 +1025,8 @@ async function guardarJogo(ev) {
     plataforma: document.getElementById('f_plataforma').value,
     tamanho: document.getElementById('f_tamanho').value.trim(),
     senha: document.getElementById('f_senha').value.trim(),
+    descricao_curta: document.getElementById('f_descricao_curta').value.trim(),
+    descricao_longa: document.getElementById('f_descricao_longa').value.trim(),
     imagem: document.getElementById('f_imagem').value.trim(),
     imagem2: document.getElementById('f_imagem2').value.trim(),
     imagem3: document.getElementById('f_imagem3').value.trim(),
@@ -946,8 +1041,6 @@ async function guardarJogo(ev) {
     texture_link: document.getElementById('f_texture_link').value.trim(),
     save_link: document.getElementById('f_save_link').value.trim(),
     tiktok_link: document.getElementById('f_tiktok_link').value.trim(),
-    descricao_curta: document.getElementById('f_descricao_curta').value.trim(),
-    descricao_longa: document.getElementById('f_descricao_longa').value.trim(),
     pago: document.getElementById('f_tipo').value === 'pago',
     preco: document.getElementById('f_preco').value.trim(),
     destaque: document.getElementById('f_destaque').checked,
@@ -956,9 +1049,10 @@ async function guardarJogo(ev) {
     partilhas_necessarias: parseInt(document.getElementById('f_partilhas_necessarias').value) || 0
   };
 
-  if (!dados.nome || !dados.plataforma || !dados.download) {
-    toast('Preenche nome, plataforma e link principal.', 'error');
-    return;
+  // Aviso suave (não bloqueia)
+  if (!dados.nome) {
+    const continuar = confirm('O nome do jogo está vazio. Continuar mesmo assim?');
+    if (!continuar) { irParaFase(1); return; }
   }
 
   try {
@@ -970,7 +1064,7 @@ async function guardarJogo(ev) {
     } else {
       const novo = await salvarNoBackend(dados);
       jogos.push(novo.jogo || novo);
-      toast('Jogo adicionado com sucesso.');
+      toast('Jogo publicado com sucesso.');
     }
     fecharFormulario();
     renderGrid();
@@ -992,23 +1086,15 @@ async function init() {
   await carregarJogos();
   renderGrid();
 
-  document.getElementById('searchInput')
-    .addEventListener('input', (e) => {
-      filtroTexto = e.target.value;
-      renderGrid();
-    });
-
-  document.getElementById('filtroPlataforma')
-    .addEventListener('change', (e) => {
-      filtroPlataforma = e.target.value;
-      renderGrid();
-    });
-
-  document.getElementById('filtroTipo')
-    .addEventListener('change', (e) => {
-      filtroTipo = e.target.value;
-      renderGrid();
-    });
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    filtroTexto = e.target.value; renderGrid();
+  });
+  document.getElementById('filtroPlataforma').addEventListener('change', (e) => {
+    filtroPlataforma = e.target.value; renderGrid();
+  });
+  document.getElementById('filtroTipo').addEventListener('change', (e) => {
+    filtroTipo = e.target.value; renderGrid();
+  });
 }
 
 init();
